@@ -7,10 +7,10 @@ services:
     build:
        context: .
     env_file:
-      - .development.env
+      - .release.env
     volumes:
-      - .:/app
-      - /app/node_modules
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - 7000:7000
       - 9229:9299
@@ -24,7 +24,7 @@ services:
     container_name: postgres
     image: postgres:12
     env_file:
-      - .development.env
+      - .release.env
     environment:
       PG_DATA: /var/lib/postgres/data
     ports:
@@ -32,12 +32,13 @@ services:
     restart: always
 
   pgadmin:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:latest
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com # Логін для входу в pgAdmin
-      PGADMIN_DEFAULT_PASSWORD: admin        # Пароль для входу в pgAdmin
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "8080:80" # Порт для pgAdmin
+      - "8080:80"
     depends_on:
       - postgres
+

@@ -4,17 +4,12 @@ FROM node:16
 # Встановлюємо робочу директорію
 WORKDIR /usr/src/app
 
-# Копіюємо package.json та package-lock.json
+# Копіюємо package.json та встановлюємо залежності
 COPY package*.json ./
-
-# Встановлюємо залежності
 RUN npm install
 
 # Копіюємо решту коду
 COPY . .
 
-# Налаштовуємо порт
-COPY ./dist ./dist
-
-# Запускаємо додаток
+# Вказуємо команду для запуску програми
 CMD ["npm", "run", "start:dev"]

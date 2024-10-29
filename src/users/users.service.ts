@@ -1,7 +1,6 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {UserCreateDTO} from "./dto/user.createDTO";
 import {User} from "./users.model";
-import {DataTypes} from "sequelize";
 
 @Injectable()
 export class UsersService {
@@ -12,7 +11,7 @@ export class UsersService {
     ) {
     }
 
-    async userIsExist(id: typeof DataTypes.UUID): Promise<User> {
+    async userIsExist(id: string): Promise<User> {
         try {
             return await this.userModel.findOne({
                 where:{
@@ -42,7 +41,7 @@ export class UsersService {
         }
     }
 
-    async updateUser(id: typeof DataTypes.UUID, updateData: UserCreateDTO): Promise<User|boolean>{
+    async updateUser(id: string, updateData: UserCreateDTO): Promise<User|boolean>{
         try {
             const user = await this.userIsExist(id)
             return  await user.update(updateData);
@@ -52,4 +51,23 @@ export class UsersService {
         }
     }
 
+    async deleteUser(id: string): Promise<User|boolean>{
+        try {
+            const user = await this.userIsExist(id)
+            await user.destroy()
+            return user;
+        } catch (e){
+            console.log(e)
+            return false;
+        }
+    }
+
+    async findUserById(userId: string) {
+        try {
+            return this.userIsExist(userId);
+        } catch (e) {
+            console.log(e)
+            return false;
+        }
+    }
 }

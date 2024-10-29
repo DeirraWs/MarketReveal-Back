@@ -1,4 +1,5 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import {ApiProperty} from "@nestjs/swagger";
 
 export interface IUser {
     id?: number;
@@ -12,6 +13,12 @@ export interface IUser {
     timestamps: true, // Додає поля createdAt та updatedAt автоматично
 })
 export class User extends Model<User,IUser>{
+
+    @ApiProperty(
+        {
+            description: 'UUID',
+        }
+    )
     @Column({
         type: DataType.UUID,
         defaultValue: DataType.UUIDV4,
@@ -21,12 +28,14 @@ export class User extends Model<User,IUser>{
     })
     id!: typeof DataType.UUID;
 
+    @ApiProperty()
     @Column({
         type: DataType.STRING,
         allowNull: false,
     })
     username!: string;
 
+    @ApiProperty()
     @Column({
         type: DataType.STRING,
         allowNull: false,
@@ -34,6 +43,7 @@ export class User extends Model<User,IUser>{
     })
     email!: string;
 
+    @ApiProperty()
     @Column({
         type: DataType.STRING,
         allowNull: false,
