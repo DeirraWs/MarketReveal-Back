@@ -6,12 +6,16 @@ import {User} from "./model/users.model";
 import {RolesModule} from "../roles/roles.module";
 import {Role} from "../roles/models/roles.model";
 import {UserRoles} from "../roles/models/userRole.model";
+import { AuthModule } from 'src/auth/auth.module';
+import { forwardRef } from '@nestjs/common';
+
 
 
 @Module({
     imports: [
         SequelizeModule.forFeature([User,Role,UserRoles]),
-        RolesModule
+        RolesModule,
+        forwardRef( () => AuthModule),
     ],
     controllers: [UsersController],
     providers: [UsersService],

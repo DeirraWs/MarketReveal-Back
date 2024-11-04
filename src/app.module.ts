@@ -9,6 +9,7 @@ import {User} from "./users/model/users.model";
 import { RolesModule } from './roles/roles.module';
 import {Role} from "./roles/models/roles.model";
 import {UserRoles} from "./roles/models/userRole.model";
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import {UserRoles} from "./roles/models/userRole.model";
           synchronize: true,
           //sync: { force: true },
       })
-    , UsersModule, RolesModule],
+    , UsersModule, RolesModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

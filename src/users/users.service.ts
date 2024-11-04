@@ -18,6 +18,7 @@ export class UsersService {
             const user = await this.userModel.create<User>(data);
             const role = await this.roleService.findRoleByValue("USER")
             await user.$set('roles',[role.id])
+            user.roles = [role]
             return user
         } catch (e){
             console.log(e)
@@ -108,5 +109,9 @@ export class UsersService {
         }
     }
 
+    async getUserByEmail(email: string) {
+        const user = await this.userModel.findOne({where: {email}, include: {all: true}})
+        return user;
+    }
 
 }
