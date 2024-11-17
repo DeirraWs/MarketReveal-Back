@@ -10,6 +10,7 @@ import { RolesModule } from './roles/roles.module';
 import {Role} from "./roles/models/roles.model";
 import {UserRoles} from "./roles/models/userRole.model";
 import { AuthModule } from './auth/auth.module';
+import { TgBotModule } from './tg-bot/tg-bot.module';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { AuthModule } from './auth/auth.module';
           synchronize: true,
           //sync: { force: true },
       })
-    , UsersModule, RolesModule, AuthModule],
+    , UsersModule, RolesModule, AuthModule, TgBotModule],
   controllers: [AppController],
   providers: [AppService],
 })
