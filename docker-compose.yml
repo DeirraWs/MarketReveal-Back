@@ -5,7 +5,7 @@ services:
   main:
     container_name: main
     build:
-       context: .
+      context: .
     env_file:
       - .release.env
     volumes:
@@ -19,6 +19,16 @@ services:
     depends_on:
       - postgres
     restart: always
+
+  telegram-bot:
+    container_name: telegram-bot
+    build:
+      context: .
+    env_file:
+      - .release.env
+    restart: always
+    depends_on:
+      - postgres
 
   postgres:
     container_name: postgres
