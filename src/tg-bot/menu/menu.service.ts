@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Menu } from '@grammyjs/menu';
 import { Context } from 'grammy';
 import { CommandService,Handler } from '../command/command.service';
+import {MyContext} from "../tg-bot.service";
 
 class HelpHandler extends Handler {
 
@@ -14,7 +15,7 @@ class HelpHandler extends Handler {
 
 @Injectable()
 export class MenuService {
-    private menu: Menu;
+    private menu: Menu<MyContext>;
 
     constructor(private readonly commandManagerService: CommandService) {
         this.menu = new Menu("main-menu");

@@ -4,7 +4,9 @@ import { MenuService } from './menu.service';
 import { CommandModule } from '../command/command.module';
 
 @Module({
-    imports: [CommandModule],
+    imports: [
+        CommandModule
+    ],
     providers: [MenuService],
     exports: [MenuService],
 })
