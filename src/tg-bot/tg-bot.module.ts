@@ -3,6 +3,7 @@ import { TgBotService } from './tg-bot.service';
 import {CommandModule} from "./command/command.module";
 import {MenuModule} from "./menu/menu.module";
 import {DialogModule} from "./dialog/dialog.module";
+import { SearchManageModule } from '../search/search-manage/search-manage.module';
 
 
 @Module({
@@ -10,7 +11,8 @@ import {DialogModule} from "./dialog/dialog.module";
   imports: [
       CommandModule,
       MenuModule,
-      DialogModule
+      DialogModule,
+      SearchManageModule
   ],
     exports: [
         TgBotService

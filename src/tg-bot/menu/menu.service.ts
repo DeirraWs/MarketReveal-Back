@@ -32,8 +32,13 @@ export class MenuService {
             })
             .text('Допомога' , async (ctx) => {
                 await this.commandManagerService.handle("help",ctx);
-            });
+            })
+            .text("Пошук", async (ctx) => {
+                await this.commandManagerService.handle("start-search",ctx);
+            })
     }
+
+
 
     getMenu(): Menu {
         return this.menu;

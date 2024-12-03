@@ -1,5 +1,4 @@
-import {Inject, Injectable} from "@nestjs/common";
-import { Context } from "grammy";
+import {Injectable} from "@nestjs/common";
 import {MyContext} from "../tg-bot.service";
 import {MenuService} from "../menu/menu.service";
 
@@ -18,11 +17,6 @@ export abstract class Dialog {
     async end(ctx: MyContext) {
         ctx.session.activeDialog = undefined;
         ctx.session.dialogData = undefined;
-
-        const menu = this.menuService.getMenu(); // Отримати меню
-        await ctx.reply('Main menu', {
-            reply_markup: menu,
-        });
     }
 }
 

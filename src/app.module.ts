@@ -11,6 +11,8 @@ import {Role} from "./roles/models/roles.model";
 import {UserRoles} from "./roles/models/userRole.model";
 import { AuthModule } from './auth/auth.module';
 import { TgBotModule } from './tg-bot/tg-bot.module';
+import { SearchManageModule } from './search/search-manage/search-manage.module';
+import { DictionaryModule } from './search/dictionary/dictionary.module';
 
 @Module({
   imports: [
@@ -30,7 +32,7 @@ import { TgBotModule } from './tg-bot/tg-bot.module';
           synchronize: true,
           //sync: { force: true },
       })
-    , UsersModule, RolesModule, AuthModule, TgBotModule],
+    , UsersModule, RolesModule, AuthModule, TgBotModule, SearchManageModule, DictionaryModule],
   controllers: [AppController],
   providers: [AppService],
 })

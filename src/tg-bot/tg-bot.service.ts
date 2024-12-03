@@ -1,9 +1,10 @@
 // bot/bot.service.ts
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import {Bot, Context, session, SessionFlavor} from 'grammy';
 import { MenuService } from './menu/menu.service';
 import {DialogService} from "./dialog/dialog.service";
 import * as process from "node:process";
+import MenuPagination from '../search/search-manage/tg/menuResultShow';
 
 export interface MySession {
     activeDialog?: string;
@@ -17,6 +18,7 @@ export class TgBotService implements OnModuleInit {
     private bot: Bot<MyContext>;
 
     constructor(
+      @Inject() private menuPagination: MenuPagination ,
        private readonly menuService: MenuService,
        private readonly dialogService: DialogService,
     ) {
@@ -26,6 +28,7 @@ export class TgBotService implements OnModuleInit {
     onModuleInit() {
 
         const menu = this.menuService.getMenu();
+        this.menuPagination.createNewMenu()
 
         this.bot.use(session<MySession, MyContext>({
             initial: () => {
@@ -35,6 +38,7 @@ export class TgBotService implements OnModuleInit {
         }));
 
         this.bot.use(menu);
+        this.bot.use(this.menuPagination.getMenu())
 
         this.bot.command('start', async (ctx) => {
             await ctx.reply('Вітаємо! Щоб отримати повний функціонал, будь ласка, зареєструйтесь.',{
@@ -49,11 +53,6 @@ export class TgBotService implements OnModuleInit {
 
         this.bot.catch((err) => {
             console.error('Error caught in bot:', err); // Вивести деталі помилки у консоль
-            if (err instanceof Error) {
-                this.bot.api.sendMessage('<ADMIN_CHAT_ID>', `Error occurred: ${err.message}`);
-            } else {
-                this.bot.api.sendMessage('<ADMIN_CHAT_ID>', 'Unexpected error occurred in the bot!');
-            }
         });
 
         this.bot.start();

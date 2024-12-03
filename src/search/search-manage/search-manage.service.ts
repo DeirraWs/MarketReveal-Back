@@ -1,0 +1,29 @@
+import {Inject, Injectable} from '@nestjs/common';
+import {ISearchModule} from "../search-modules/ISearchModule";
+import {olxSearchModule} from "../search-modules/olx/olxSearchModule";
+import {DictionaryService} from "../dictionary/dictionary.service";
+import { SearchResult } from '../types/types';
+
+@Injectable()
+export class SearchManageService {
+
+    constructor(@Inject() private _dictionaryService: DictionaryService,
+                @Inject() private olxSearchModule: olxSearchModule) {}
+
+    private _searchModules: ISearchModule[] = [
+        this.olxSearchModule
+    ]
+
+    async searchProduct (name: string): Promise<SearchResult[]> {
+        this._searchModules.forEach((searchModule)=>{
+            searchModule.setNames(this._dictionaryService.getSynonyms(name))
+        })
+        const finalRes:SearchResult[] = []
+        for (const searchModule of this._searchModules) {
+            const searchResult = await searchModule.search()
+            finalRes.push(searchResult)
+        }
+        return finalRes;
+    }
+
+}

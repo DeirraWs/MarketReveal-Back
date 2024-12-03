@@ -1,12 +1,11 @@
 // command/command-manager.service.ts
 import { Injectable } from '@nestjs/common';
-import {Context} from "grammy";
 import {MyContext} from "../tg-bot.service";
 
 
 export abstract class Handler {
 
-    abstract handlerLogic(context: Context): Promise<any>;
+    abstract handlerLogic(context: MyContext): Promise<any>;
 
     async handle(context: MyContext): Promise<any> {
         try {
