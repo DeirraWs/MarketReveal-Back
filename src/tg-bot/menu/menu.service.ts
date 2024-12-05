@@ -1,4 +1,4 @@
-// menu/menu.service.ts
+
 import { Injectable } from '@nestjs/common';
 import { Menu } from '@grammyjs/menu';
 import { Context } from 'grammy';
@@ -37,8 +37,6 @@ export class MenuService {
                 await this.commandManagerService.handle("start-search",ctx);
             })
     }
-
-
 
     getMenu(): Menu {
         return this.menu;

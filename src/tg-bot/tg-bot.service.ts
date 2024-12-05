@@ -4,11 +4,12 @@ import {Bot, Context, session, SessionFlavor} from 'grammy';
 import { MenuService } from './menu/menu.service';
 import {DialogService} from "./dialog/dialog.service";
 import * as process from "node:process";
-import MenuPagination from '../search/search-manage/tg/menuResultShow';
+import MenuPagination from './menu/menuResultShow';
 
 export interface MySession {
     activeDialog?: string;
     dialogData?: Record<string, any>;
+    searchData?: Record<string, any>;
 }
 
 export type MyContext = Context & SessionFlavor<MySession>;

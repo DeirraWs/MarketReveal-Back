@@ -1,10 +1,15 @@
 import { Menu } from '@grammyjs/menu';
 import { Context } from 'grammy';
-import { MyContext } from '../../../tg-bot/tg-bot.service';
-import { Injectable } from '@nestjs/common';
+import { MyContext } from '../tg-bot.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { CommandService } from '../command/command.service';
 
 @Injectable()
 export default class MenuPagination {
+
+  constructor(@Inject() private commandService: CommandService) {
+
+  }
 
   private _menu: Menu<MyContext> | null = null;
 
@@ -53,22 +58,25 @@ export default class MenuPagination {
             });
           }
         },
-      );
+      ).row()
+      .text("Припинити перегляд", async (ctx) => {
+          await this.commandService.handle("stop-result-search",ctx)
+      })
   }
 
   getStartInfo(context: MyContext) {
-    return context.session.dialogData.res[0];
+    return ` 1/${context.session.searchData.res.length}  \n` + context.session.searchData.res[0];
   }
 
   private _getItemText(index: number,context:MyContext): string {
-    return context.session.dialogData.res[index];
+    return ` ${index+1}/${context.session.searchData.res.length}  \n` + context.session.searchData.res[index];
   }
 
   private _pageMovement(next: boolean, prevValue: string | RegExpMatchArray | undefined,ctx:MyContext): string {
     const parsePayloadL = this._parsePayload(String(prevValue));
     const tmp = parsePayloadL.payload;
     if (next) {
-      if (tmp + 1 < ctx.session.dialogData.res.length) {
+      if (tmp + 1 < ctx.session.searchData.res.length) {
         return this._createPayload({
           prevPayload: parsePayloadL.payload,
           payload: parsePayloadL.payload + 1,

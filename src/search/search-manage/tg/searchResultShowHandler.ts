@@ -1,8 +1,7 @@
 import { CommandService, Handler } from '../../../tg-bot/command/command.service';
 import { Inject, Injectable } from '@nestjs/common';
-import { MenuService } from '../../../tg-bot/menu/menu.service';
 import { MyContext } from '../../../tg-bot/tg-bot.service';
-import MenuPagination from './menuResultShow';
+import MenuPagination from '../../../tg-bot/menu/menuResultShow';
 import { SearchResult, ResultStructure } from '../../types/types';
 
 @Injectable()
@@ -10,7 +9,6 @@ export class SearchResultShowHandler extends Handler {
 
   constructor(
     @Inject() commandService: CommandService,
-    @Inject() menuService: MenuService,
     @Inject() private menuPagination: MenuPagination,
   ) {
     super();
@@ -18,8 +16,7 @@ export class SearchResultShowHandler extends Handler {
   }
 
   async handlerLogic(context: MyContext): Promise<any> {
-    console.log("Log from handler",context.session.dialogData.res);
-    context.session.dialogData.res = this._createCorrectFormatOfResult(context.session.dialogData.res);
+    context.session.searchData.res = this._createCorrectFormatOfResult(context.session.searchData.res);
     await context.reply(this.menuPagination.getStartInfo(context),{
       reply_markup: this.menuPagination.getMenu()
     })

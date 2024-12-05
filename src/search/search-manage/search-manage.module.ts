@@ -10,12 +10,14 @@ import {DialogModule} from "../../tg-bot/dialog/dialog.module";
 import {MenuModule} from "../../tg-bot/menu/menu.module";
 import olxSearchCore from "../search-modules/olx/olxSearchCore";
 import { SearchResultShowHandler } from './tg/searchResultShowHandler';
-import MenuPagination from './tg/menuResultShow';
+import MenuPagination from '../../tg-bot/menu/menuResultShow';
+import { SearchStopResultShowHandler } from './tg/searchStopResultShowHandler';
 
 @Module({
     providers: [
         MenuPagination,
         SearchResultShowHandler,
+        SearchStopResultShowHandler,
         SearchHandler,
         SearchDialog,
         SearchManageService,

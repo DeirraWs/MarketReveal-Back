@@ -22,6 +22,7 @@ export class SearchDialog extends Dialog {
     async start(ctx: MyContext): Promise<void> {
         ctx.session.activeDialog = this.name;
         ctx.session.dialogData = {};
+        ctx.session.searchData = {};
     }
 
     async processMessage(ctx: MyContext): Promise<void> {
@@ -31,9 +32,10 @@ export class SearchDialog extends Dialog {
             dialogData.searchName = ctx.message?.text;
             await ctx.reply("⏳ Процес розпочато, зачекайте...")
             try {
-                ctx.session.dialogData.res = await this.searchManager.searchProduct(dialogData.searchName);
+                ctx.session.searchData.res = await this.searchManager.searchProduct(dialogData.searchName);
                 await ctx.reply("✅ Процес завершено успішно!")
                 await this.commandService.handle("start-result-search",ctx)
+                await this.end(ctx)
             } catch (e){
                 await ctx.reply("Процес завершено з помилкою")
                 await this.end(ctx)

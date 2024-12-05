@@ -44,16 +44,16 @@ export default class olxSearchCore extends ISearchCore {
     }
 
     async offerParser() {
-        const offers = [];
-        for (const urlToOffer of this._links) {
-            const htmlPage: cheerio.Root | undefined = await this.getHtmlPage(urlToOffer);
-            const offer = this._parseOfferHtmlPage(htmlPage, urlToOffer);
-            if (offer) {
-                offers.push(offer);
-            }
-        }
-        this._links = []
-        return offers;
+
+        const offers = await Promise.all(
+          this._links.map(async (urlToOffer) => {
+              const htmlPage: cheerio.Root | undefined = await this.getHtmlPage(urlToOffer);
+              return this._parseOfferHtmlPage(htmlPage, urlToOffer);
+          })
+        );
+
+        this._links = [];
+        return offers.filter((offer) => offer !== undefined);
     }
 
     private _parseOfferHtmlPage(htmlPage: cheerio.Root | undefined, url: string) {
@@ -151,7 +151,6 @@ export default class olxSearchCore extends ISearchCore {
     }
 
     async search(urls: [string]): Promise<Object[]> {
-        console.log(`url: ${urls[0]}`);
         for (const url of urls) {
             this.getAllUrlToDetailedInformationFromPage(await this.getHtmlPage(url));
         }
