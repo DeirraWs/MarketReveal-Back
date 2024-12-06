@@ -4,10 +4,8 @@ import {AuthService} from './auth.service';
 import {UsersModule} from 'src/users/users.module';
 import {JwtModule} from '@nestjs/jwt';
 import {forwardRef} from '@nestjs/common';
-import {RegistrationHandler} from "./tg/registrationHandler";
 import {CommandModule} from "../tg-bot/command/command.module";
 import {DialogModule} from "../tg-bot/dialog/dialog.module";
-import {RegistrationDialog} from "./tg/registrationDialog";
 import {MenuModule} from "../tg-bot/menu/menu.module";
 
 
@@ -16,8 +14,6 @@ import {MenuModule} from "../tg-bot/menu/menu.module";
     providers:
         [
             AuthService,
-            RegistrationHandler,
-            RegistrationDialog
         ],
     imports: [
         forwardRef(() => UsersModule),

@@ -3,21 +3,23 @@ import { Context } from 'grammy';
 import { MyContext } from '../tg-bot.service';
 import { Inject, Injectable } from '@nestjs/common';
 import { CommandService } from '../command/command.service';
+import { MenuService, MenuStructure } from './menu.service';
 
 @Injectable()
-export default class MenuPagination {
+export default class MenuPagination extends MenuStructure{
 
-  constructor(@Inject() private commandService: CommandService) {
-
+  constructor(@Inject() private commandService: CommandService,
+              @Inject() private menuService: MenuService,) {
+    super();
+    this.creteMenu()
+    menuService.registerMenu("menu-pagination",this)
   }
 
-  private _menu: Menu<MyContext> | null = null;
-
-  getMenu(){
+  getMenu(): Menu<MyContext> {
     return this._menu;
   }
 
-  createNewMenu() {
+  creteMenu() {
     this._menu = new Menu<MyContext>('pagination-menu', { onMenuOutdated: false })
       .text(
         { text: '← Previous', payload: (ctx) => this._pageMovement(false, ctx.match,ctx) },

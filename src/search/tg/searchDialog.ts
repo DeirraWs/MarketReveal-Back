@@ -15,7 +15,7 @@ export class SearchDialog extends Dialog {
         private readonly dialogService: DialogService,
         readonly menuService: MenuService,
     ) {
-        super(menuService);
+        super();
         dialogService.registerDialog(this)
     }
 

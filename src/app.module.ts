@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { TgBotModule } from './tg-bot/tg-bot.module';
 import { SearchManageModule } from './search/search-manage/search-manage.module';
 import { DictionaryModule } from './search/dictionary/dictionary.module';
+import { OpenAiModule } from './open-ai/open-ai.module';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { DictionaryModule } from './search/dictionary/dictionary.module';
           synchronize: true,
           //sync: { force: true },
       })
-    , UsersModule, RolesModule, AuthModule, TgBotModule, SearchManageModule, DictionaryModule],
+    , UsersModule, RolesModule, AuthModule, TgBotModule, SearchManageModule, DictionaryModule, OpenAiModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -5,7 +5,7 @@ import {MenuService} from "../menu/menu.service";
 
 export abstract class Dialog {
 
-    protected constructor( protected readonly menuService: MenuService,) {
+    protected constructor() {
     }
 
     abstract name: string;
