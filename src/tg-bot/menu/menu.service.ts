@@ -7,7 +7,7 @@ export abstract class MenuStructure {
 
     protected _menu: Menu<MyContext>;
 
-    protected abstract creteMenu():void;
+    abstract creteMenu():void;
     abstract getMenu():Menu<MyContext>
 
 }
@@ -28,11 +28,7 @@ export class MenuService {
         return this._menus.get(id);
     }
 
-    getAllMenuToRegisterInBot(): Menu<MyContext>[] {
-        const menus =  Array.from(this._menus.values())
-        return menus.map((value)=>{
-            return  value.getMenu()
-        })
+    getAllMenuToRegisterInBot(): MenuStructure[] {
+        return  Array.from(this._menus.entries()).filter(menu => menu[0] !== "main-menu").map( menu => menu[1] );
     }
-
 }

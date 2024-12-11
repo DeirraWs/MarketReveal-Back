@@ -14,7 +14,7 @@ class HelpHandler extends Handler{
 export class MainMenu extends MenuStructure {
 
   constructor(@Inject() private commandManagerService: CommandService,
-              @Inject() menuService: MenuService, ) {
+              @Inject() private menuService: MenuService, ) {
     super();
     this.creteMenu()
     menuService.registerMenu("main-menu",this)
@@ -24,13 +24,16 @@ export class MainMenu extends MenuStructure {
     this.commandManagerService.addHandler("help",new HelpHandler)
 
     this._menu = new Menu<MyContext>("main-menu")
-      .text('Синоніми', async (ctx) => {
+      .text({text: ctx => ctx.t("main_menu_account_btn")}, async (ctx) => {
         await this.commandManagerService.handle("search-synonyms",ctx);
       })
-      .text('Допомога' , async (ctx) => {
+      .text({text: ctx => ctx.t("main_menu_account1_btn")}, async (ctx) => {
+        await this.commandManagerService.handle("account-open",ctx);
+      })
+      .text({text: ctx => ctx.t("main_menu_help_btn")} , async (ctx) => {
         await this.commandManagerService.handle("help",ctx);
       })
-      .text("Пошук", async (ctx) => {
+      .text({text: ctx => ctx.t("main_menu_search_btn")}, async (ctx) => {
         await this.commandManagerService.handle("start-search",ctx);
       })
   }

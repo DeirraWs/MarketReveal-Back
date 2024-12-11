@@ -15,7 +15,7 @@ export class SearchHandler extends Handler {
     }
 
     async handlerLogic(context: MyContext): Promise<any> {
-        await context.reply("Еnter the name of the product you want to find")
+        await context.reply(context.t("search-process-question"))
         await this.dialogService.startDialog(context,"search")
     }
 

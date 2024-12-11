@@ -30,14 +30,14 @@ export class SearchDialog extends Dialog {
 
         if (!dialogData.searchName) {
             dialogData.searchName = ctx.message?.text;
-            await ctx.reply("⏳ Процес розпочато, зачекайте...")
+            await ctx.reply(ctx.t("search-process-start"))
             try {
                 ctx.session.searchData.res = await this.searchManager.searchProduct(dialogData.searchName);
-                await ctx.reply("✅ Процес завершено успішно!")
+                await ctx.reply(ctx.t("search-process-finish-success"))
                 await this.commandService.handle("start-result-search",ctx)
                 await this.end(ctx)
             } catch (e){
-                await ctx.reply("Процес завершено з помилкою")
+                await ctx.reply(ctx.t("search-process-finish-not-success"))
                 await this.end(ctx)
             }
         }

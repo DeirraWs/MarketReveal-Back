@@ -16,7 +16,7 @@ export class SearchStopResultShowHandler extends Handler {
 
   async handlerLogic(context: MyContext): Promise<any> {
     context.session.searchData.res = {};
-    await context.reply("Головне меню",{
+    await context.reply(context.t('main_menu_text'),{
       reply_markup: this.menuService.getMenuClass("main-menu").getMenu()
     })
   }

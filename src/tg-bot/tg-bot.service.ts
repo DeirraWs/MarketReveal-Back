@@ -1,8 +1,9 @@
 // bot/bot.service.ts
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import {Bot, Context, session, SessionFlavor} from 'grammy';
 import { MenuService } from './menu/menu.service';
 import {DialogService} from "./dialog/dialog.service";
+import { I18n, I18nFlavor } from "@grammyjs/i18n";
 import * as process from "node:process";
 
 export interface MySession {
@@ -11,7 +12,7 @@ export interface MySession {
     searchData?: Record<string, any>;
 }
 
-export type MyContext = Context & SessionFlavor<MySession>;
+export type MyContext = Context & SessionFlavor<MySession> & I18nFlavor;
 
 @Injectable()
 export class TgBotService implements OnModuleInit {
@@ -26,7 +27,11 @@ export class TgBotService implements OnModuleInit {
 
     onModuleInit() {
 
-        this.menuService.getMenuClass("main-menu").getMenu()
+        const i18n = new I18n<MyContext>({
+            defaultLocale: "en",
+            useSession: true,
+            directory: "locales",
+        });
 
         this.bot.use(session<MySession, MyContext>({
             initial: () => {
@@ -35,12 +40,12 @@ export class TgBotService implements OnModuleInit {
             }
         }));
 
-        for (const menu of this.menuService.getAllMenuToRegisterInBot()) {
-            this.bot.use(menu)
-        }
+        this.bot.use(i18n);
+
+        this.initAllMenu();
 
         this.bot.command('start', async (ctx) => {
-            await ctx.reply('Вітаємо! Щоб отримати повний функціонал, будь ласка, зареєструйтесь.',{
+            await ctx.reply(ctx.t("greeting"),{
                 reply_markup: this.menuService.getMenuClass("main-menu").getMenu()
             });
         });
@@ -55,6 +60,18 @@ export class TgBotService implements OnModuleInit {
 
         this.bot.start();
     }
+
+    initAllMenu(){
+
+        const mainMenu = this.menuService.getMenuClass("main-menu").getMenu()
+
+        for (const menu of this.menuService.getAllMenuToRegisterInBot()) {
+            mainMenu.register(menu.getMenu())
+        }
+
+        this.bot.use(mainMenu)
+    }
+
 }
 
 
