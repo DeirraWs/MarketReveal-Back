@@ -4,6 +4,7 @@ import {Bot, Context, session, SessionFlavor} from 'grammy';
 import { MenuService } from './menu/menu.service';
 import {DialogService} from "./dialog/dialog.service";
 import * as process from "node:process";
+import { AuthService } from 'src/auth/auth.service';
 
 export interface MySession {
     activeDialog?: string;
@@ -20,6 +21,7 @@ export class TgBotService implements OnModuleInit {
     constructor(
        private readonly menuService: MenuService,
        private readonly dialogService: DialogService,
+       private readonly authService: AuthService
     ) {
         this.bot = new Bot<MyContext>(process.env.TG_BOT_TOKEN);
     }
@@ -40,7 +42,9 @@ export class TgBotService implements OnModuleInit {
         }
 
         this.bot.command('start', async (ctx) => {
-            await ctx.reply('Вітаємо! Щоб отримати повний функціонал, будь ласка, зареєструйтесь.',{
+            const userInfo = this.authService.extractUserInfo(ctx);
+            await this.authService.registration(ctx, userInfo);
+            await ctx.reply('Welcome',{
                 reply_markup: this.menuService.getMenuClass("main-menu").getMenu()
             });
         });

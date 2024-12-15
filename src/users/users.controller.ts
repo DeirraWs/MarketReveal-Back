@@ -44,7 +44,7 @@ export class UsersController {
         type: [User],
     })
     @Roles('USER')
-    @UseGuards(RolesGuard)
+    
     @Get("/")
     async getAll(): Promise<User[]> {
         return await this.usersService.findAll()

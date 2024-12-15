@@ -109,8 +109,8 @@ export class UsersService {
         }
     }
 
-    async getUserByEmail(email: string) {
-       return  await this.userModel.findOne({where: {email}, include: {all: true}})
+    async getUserByTelegramId(telegramId: number) {
+       return  await this.userModel.findOne({where: {telegramId}, include: {all: true}})
     }
 
 }

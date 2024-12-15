@@ -4,6 +4,8 @@ import {CommandModule} from "./command/command.module";
 import {MenuModule} from "./menu/menu.module";
 import {DialogModule} from "./dialog/dialog.module";
 import { SearchManageModule } from '../search/search-manage/search-manage.module';
+import { AuthModule } from 'src/auth/auth.module';
+
 
 
 @Module({
@@ -12,7 +14,8 @@ import { SearchManageModule } from '../search/search-manage/search-manage.module
       CommandModule,
       MenuModule,
       DialogModule,
-      SearchManageModule
+      SearchManageModule,
+      AuthModule
   ],
     exports: [
         TgBotService

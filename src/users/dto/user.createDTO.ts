@@ -5,15 +5,10 @@ export class  UserCreateDTO {
         description: 'User name',
         type: String,
     })
-    name: string;
+    username: string;
     @ApiProperty({
-        description: 'Email',
+        description: ' user telegram id',
         type: String,
     })
-    email: string;
-    @ApiProperty({
-        description: 'hashed password',
-        type: String,
-    })
-    password: string;
+    telegramId: number;
 }

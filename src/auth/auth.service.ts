@@ -1,43 +1,28 @@
-import {HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {UserCreateDTO} from "../users/dto/user.createDTO";
 import {UsersService} from "../users/users.service";
-import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from "bcryptjs";
-import {User} from "../users/model/users.model";
+import { Context } from 'grammy';
 
 @Injectable()
 export class AuthService {
+   
+    constructor(private userService: UsersService) {}
 
-    constructor(private userService: UsersService, private jwtService: JwtService) {}
-
-    async login(UserDTO: UserCreateDTO) {    
-        const user = await this.validateUser(UserDTO)
-        return this.generateToken(user)
-    }
-
-    async registration(UserDTO: UserCreateDTO) {
-        const candidate = await this.userService.getUserByEmail(UserDTO.email);
-        if (candidate) {
-            throw new HttpException("User with this E-mail already exists", HttpStatus.BAD_REQUEST)
-        }
-        const hashPassword = await bcrypt.hash(UserDTO.password, 5);
-        const user = await this.userService.createUser({...UserDTO, password: hashPassword})
-        return this.generateToken(user)
-    }
-
-    private async generateToken(user: User) {
-        const payload = {email: user.email, name: user.username, id:user.id, roles: user.roles}
+    extractUserInfo(ctx:any): UserCreateDTO {
         return {
-            token: this.jwtService.sign(payload)
-        }
+            telegramId: ctx.from?.id,
+            username: ctx.from?.username || null
+        };
     }
 
-    private async validateUser(userDTO: UserCreateDTO) {
-        const user = await this.userService.getUserByEmail(userDTO.email)
-        const passwordEquals = await bcrypt.compare(userDTO.password, user.password)
-        if (user && passwordEquals) {
-            return user
+    async registration(ctx: Context, UserDTO: UserCreateDTO) {
+        const candidate = await this.userService.getUserByTelegramId(UserDTO.telegramId);
+        if (candidate) {
+            await ctx.reply("User with this telegram ID already exists")
+            return null;
         }
-        throw new UnauthorizedException({message: "Incorrect email or password"})
+        const user = await this.userService.createUser({...UserDTO})
+        return user;
     }
+
 }

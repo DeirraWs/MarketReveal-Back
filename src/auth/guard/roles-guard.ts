@@ -1,38 +1,46 @@
-import { CanActivate, ExecutionContext, HttpException, HttpStatus, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
-import { Observable } from "rxjs";
-import { JwtService } from "@nestjs/jwt";
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { ROLES_KEY } from "./roles-auth.decorator";
+import { UsersService } from "src/users/users.service";
+import { MyContext } from "src/tg-bot/tg-bot.service";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-    constructor(private jwtService: JwtService, private reflector: Reflector) {
+    constructor(
+        private reflector: Reflector,
+        private usersService: UsersService
+    ) {}
 
-    }
-    
-    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-        const requiredRoles = this.reflector.getAllAndOverride(ROLES_KEY, [context.getHandler(), context.getClass(),])
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         
+        const requiredRoles = this.reflector.get<string[]>(ROLES_KEY, context.getHandler());
+
         if (!requiredRoles) {
             return true;
         }
+
         
-        const req = context.switchToHttp().getRequest()
-        try {
-            const authHeader = req.headers.authorization;
-            const bearer = authHeader.split(' ')[0]
-            const token = authHeader.split(' ')[1]
-
-            if (bearer !== 'Bearer' || !token) {
-                throw new UnauthorizedException({message: "User is not authorized"})
-            }
-            
-            const user = this.jwtService.verify(token);
-            req.user = user;
-            return user.roles.some(role => requiredRoles.includes(role.value));
-
-        }catch(e){
-            throw new HttpException ("No access", HttpStatus.FORBIDDEN)
+        const ctx = context.switchToRpc().getContext<MyContext>();
+        const telegramUserId = ctx?.from?.id;
+        if (!telegramUserId) {
+            throw new ForbiddenException('Unable to extract user ID from Telegram context');
         }
+
+        
+        const user = await this.usersService.getUserByTelegramId(telegramUserId);
+
+        if (!user) {
+            throw new ForbiddenException('User not found in the system');
+        }
+
+        
+        const userRoles = user.roles?.map((role) => role.value);
+        const hasRequiredRole = requiredRoles.some((role) => userRoles.includes(role));
+
+        if (!hasRequiredRole) {
+            throw new ForbiddenException('Access denied');
+        }
+
+        return true;
     }
 }

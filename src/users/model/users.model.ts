@@ -33,24 +33,17 @@ export class User extends Model<User,IUser>{
     @ApiProperty()
     @Column({
         type: DataType.STRING,
-        allowNull: false,
+        allowNull: true,
     })
     username!: string;
 
     @ApiProperty()
     @Column({
-        type: DataType.STRING,
+        type: DataType.BIGINT,
         allowNull: false,
         unique: true,
     })
-    email!: string;
-
-    @ApiProperty()
-    @Column({
-        type: DataType.STRING,
-        allowNull: false,
-    })
-    password!: string;
+    telegramId!: number;
 
     @BelongsToMany(()=>Role,()=>UserRoles)
     roles!: Role[];
