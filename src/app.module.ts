@@ -14,6 +14,8 @@ import { TgBotModule } from './tg-bot/tg-bot.module';
 import { SearchManageModule } from './search/search-manage/search-manage.module';
 import { DictionaryModule } from './search/dictionary/dictionary.module';
 import { OpenAiModule } from './open-ai/open-ai.module';
+import { OffersTrackingModule } from './offers-tracking/offers-tracking.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -33,7 +35,7 @@ import { OpenAiModule } from './open-ai/open-ai.module';
           synchronize: true,
           //sync: { force: true },
       })
-    , UsersModule, RolesModule, AuthModule, TgBotModule, SearchManageModule, DictionaryModule, OpenAiModule],
+    , UsersModule, RolesModule, AuthModule, TgBotModule, SearchManageModule, DictionaryModule, OpenAiModule, OffersTrackingModule, RedisModule],
   controllers: [AppController],
   providers: [AppService],
 })

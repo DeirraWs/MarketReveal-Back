@@ -9,9 +9,9 @@ import {CommandModule} from "../../tg-bot/command/command.module";
 import {DialogModule} from "../../tg-bot/dialog/dialog.module";
 import {MenuModule} from "../../tg-bot/menu/menu.module";
 import olxSearchCore from "../search-modules/olx/olxSearchCore";
-import { SearchResultShowHandler } from './tg/searchResultShowHandler';
+import {SearchResultShowHandler} from './tg/searchResultShowHandler';
 import MenuPagination from '../../tg-bot/menu/menuResultShow';
-import { SearchStopResultShowHandler } from './tg/searchStopResultShowHandler';
+import {SearchStopResultShowHandler} from './tg/searchStopResultShowHandler';
 
 @Module({
     providers: [
@@ -28,12 +28,13 @@ import { SearchStopResultShowHandler } from './tg/searchStopResultShowHandler';
     controllers: [SearchManageController],
     imports: [
         DictionaryModule,
-        forwardRef(()=> CommandModule) ,
+        forwardRef(() => CommandModule),
         DialogModule,
         MenuModule
     ],
     exports: [
-      MenuPagination
+        MenuPagination,
+        SearchManageService
     ]
 })
 export class SearchManageModule {

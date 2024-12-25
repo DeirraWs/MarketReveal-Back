@@ -12,7 +12,6 @@ export interface IPrice {
 @Injectable()
 export default class olxSearchCore extends ISearchCore {
 
-    private _links: string[] = [];
 
     async getHtmlPage(url: string): Promise<cheerio.Root> {
         try {
@@ -25,34 +24,31 @@ export default class olxSearchCore extends ISearchCore {
 
     getAllUrlToDetailedInformationFromPage(page: cheerio.Root) {
         let prevHref = "";
+        const links: string[] = []
 
         page('a.css-qo0cxu').each((i: number, element: cheerio.Element) => {
             const href = page(element).attr('href');
 
             if (href && prevHref !== href) {
-                this._links.push("https://www.olx.ua" + href.slice(2, href.length));
+                links.push("https://www.olx.ua" + href.slice(2, href.length));
                 prevHref = href;
             }
         });
+
+        return links
     }
 
-    async logAllOfferUrl() {
-        console.log("All Offer URLs:");
-        this._links.forEach((value) => {
-            console.log(value);
-        });
-    }
 
-    async offerParser() {
+
+    async offerParser(links: string[]) {
 
         const offers = await Promise.all(
-          this._links.map(async (urlToOffer) => {
+          links.map(async (urlToOffer) => {
               const htmlPage: cheerio.Root | undefined = await this.getHtmlPage(urlToOffer);
               return this._parseOfferHtmlPage(htmlPage, urlToOffer);
           })
         );
 
-        this._links = [];
         return offers.filter((offer) => offer !== undefined);
     }
 
@@ -151,9 +147,18 @@ export default class olxSearchCore extends ISearchCore {
     }
 
     async search(urls: [string]): Promise<Object[]> {
+        let links: string[] = []
         for (const url of urls) {
-            this.getAllUrlToDetailedInformationFromPage(await this.getHtmlPage(url));
+            links = [...links, ...this.getAllUrlToDetailedInformationFromPage(await this.getHtmlPage(url))];
         }
-        return await this.offerParser();
+        return await this.offerParser(links);
+    }
+
+    async getListOfUrls(url:string) : Promise<string[]> {
+        return this.getAllUrlToDetailedInformationFromPage(await this.getHtmlPage(url))
+    }
+
+    async getDetailInformationByProduct(urls:string[]): Promise<Object[]> {
+        return await this.offerParser(urls)
     }
 }

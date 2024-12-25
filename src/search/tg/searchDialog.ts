@@ -22,7 +22,6 @@ export class SearchDialog extends Dialog {
     async start(ctx: MyContext): Promise<void> {
         ctx.session.activeDialog = this.name;
         ctx.session.dialogData = {};
-        ctx.session.searchData = {};
     }
 
     async processMessage(ctx: MyContext): Promise<void> {
@@ -32,7 +31,8 @@ export class SearchDialog extends Dialog {
             dialogData.searchName = ctx.message?.text;
             await ctx.reply(ctx.t("search-process-start"))
             try {
-                ctx.session.searchData.res = await this.searchManager.searchProduct(dialogData.searchName);
+                ctx.session.searchData.searchParams.query = dialogData.searchName;
+                ctx.session.searchData.data = await this.searchManager.searchProduct(dialogData.searchName);
                 await ctx.reply(ctx.t("search-process-finish-success"))
                 await this.commandService.handle("start-result-search",ctx)
                 await this.end(ctx)

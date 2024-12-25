@@ -7,6 +7,8 @@ main_menu_account_btn = Synonims tmp
 main_menu_account1_btn = Account
 main_menu_search_btn = Search
 main_menu_help_btn = Help
+main_menu_tracking_btn = Tracked
+
 
 //Search dialog
 
@@ -31,6 +33,8 @@ menu_result_show_prev_btn = ← Previous
 menu_result_show_extended_btn = Extended info
 menu_result_show_normal_btn = Back
 menu_result_show_stop_btn = Stop watching
+menu_result_show_track_btn = Track
+menu_result_show_tracked_btn = Tracked
 
 //Menu Account
 
@@ -42,3 +46,11 @@ menu_account_back_btn = Back
 
 change_language_menu_text = Select language
 selected_language = You select English!
+
+//Tracking Menu
+
+tracking-menu-first-search = Please perform a search to start tracking the product.
+tracking-menu-choose = Select a product to view the results.
+tracking-menu-choose-search = Search for a product
+tracking-menu-count-of-results = Number of results:
+tracking-menu-update = Update

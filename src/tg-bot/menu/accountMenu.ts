@@ -13,7 +13,7 @@ export class AccountMenu extends MenuStructure {
     @Inject() private commandService: CommandService,
   ) {
     super();
-    this.creteMenu();
+    this.createMenu();
     menuService.registerMenu('account-menu', this);
   }
 
@@ -21,7 +21,7 @@ export class AccountMenu extends MenuStructure {
     return this._menu;
   }
 
-  creteMenu() {
+  createMenu() {
     this._menu = new Menu<MyContext>('account-menu')
       .text(
         { text: ctx => ctx.t('menu_account_change_language_btn') }, async (ctx) => {
@@ -41,7 +41,7 @@ export class ChangeLanguageMenu extends MenuStructure {
     @Inject() private commandService: CommandService,
   ) {
     super();
-    this.creteMenu();
+    this.createMenu();
     menuService.registerMenu('change-language-menu', this);
   }
 
@@ -49,7 +49,7 @@ export class ChangeLanguageMenu extends MenuStructure {
     return this._menu;
   }
 
-  creteMenu() {
+  createMenu() {
     this._menu = new Menu<MyContext>('change-language-menu')
       .text('🇺🇦 Українська', async (ctx) => {
         await this.commandService.handle('language-change', ctx, 'ua');
