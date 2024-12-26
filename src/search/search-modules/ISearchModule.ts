@@ -20,4 +20,7 @@ export abstract class ISearchModule
 
     abstract canSearch(productType: Product): boolean
 
+    abstract getListOfUrls(url:string):Promise<string[]>
+
+    abstract getDetailInformationByProduct(urls: string[]): Promise<SearchResult>
 }

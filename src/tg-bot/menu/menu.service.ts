@@ -7,7 +7,7 @@ export abstract class MenuStructure {
 
     protected _menu: Menu<MyContext>;
 
-    abstract creteMenu():void;
+    abstract createMenu():void;
     abstract getMenu():Menu<MyContext>
 
 }

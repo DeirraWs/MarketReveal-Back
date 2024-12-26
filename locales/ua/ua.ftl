@@ -7,6 +7,7 @@ main_menu_account_btn = Синоніми тимчасові
 main_menu_account1_btn = Аккаунт
 main_menu_search_btn = Пошук
 main_menu_help_btn = Допомога
+main_menu_tracking_btn = Відслідковуванні товари
 
 //Search dialog
 
@@ -31,6 +32,8 @@ menu_result_show_prev_btn = ← Попередній
 menu_result_show_extended_btn = Розширена інформація
 menu_result_show_normal_btn = Назад
 menu_result_show_stop_btn = Припинити перегляд
+menu_result_show_track_btn = Відслідковувати
+menu_result_show_tracked_btn = Відслідковується
 
 //Menu Account
 
@@ -42,3 +45,11 @@ menu_account_back_btn = Назад
 
 change_language_menu_text = Виберіть мову
 selected_language = Ви вибрали Українську!
+
+//Tracking Menu
+
+tracking-menu-first-search = Будь ласка, зробіть пошук, щоб почати відслідковувати товар.
+tracking-menu-choose = Оберіть товар для перегляду результатів.
+tracking-menu-choose-search = Пошук товару
+tracking-menu-count-of-results = Кількість результатів:
+tracking-menu-update = Обновити

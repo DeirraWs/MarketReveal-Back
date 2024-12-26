@@ -15,7 +15,17 @@ export class SearchStopResultShowHandler extends Handler {
   }
 
   async handlerLogic(context: MyContext): Promise<any> {
-    context.session.searchData.res = {};
+
+    if (context.session.searchData.checkTrackedData){
+      context.session.searchData.checkTrackedData = false;
+      await context.reply("da",{
+        reply_markup: this.menuService.getMenuClass("tracking-menu").getMenu()
+      })
+      return;
+    }
+
+
+    context.session.searchData.dataTransformedToMenu = [];
     await context.reply(context.t('main_menu_text'),{
       reply_markup: this.menuService.getMenuClass("main-menu").getMenu()
     })

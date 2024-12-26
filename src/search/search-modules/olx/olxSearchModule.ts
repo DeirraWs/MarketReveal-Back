@@ -54,4 +54,13 @@ export class olxSearchModule extends ISearchModule {
             res: result,
         };
     }
+
+    async getListOfUrls(url:string) : Promise<string[]> {
+        return this._searchCore.getListOfUrls(url);
+    }
+
+    async getDetailInformationByProduct(urls:string[]): Promise<SearchResult> {
+        const res = await this._searchCore.getDetailInformationByProduct(urls)
+        return this._transformResultToStandardType(res)
+    }
 }

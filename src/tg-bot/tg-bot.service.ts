@@ -1,18 +1,34 @@
 // bot/bot.service.ts
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import {Injectable, OnModuleInit} from '@nestjs/common';
 import {Bot, Context, session, SessionFlavor} from 'grammy';
-import { MenuService } from './menu/menu.service';
+import {MenuService} from './menu/menu.service';
 import {DialogService} from "./dialog/dialog.service";
-import { I18n, I18nFlavor } from "@grammyjs/i18n";
+import {I18n, I18nFlavor} from "@grammyjs/i18n";
 import * as process from "node:process";
 import { AuthService } from 'src/auth/auth.service';
 import { RoleGuard} from 'src/auth/guard/roles-guard';
+import {CommandService} from "./command/command.service";
+
+export interface SessionSearchData{
+    dataTransformedToMenu: string[];
+    data: any[];
+    checkTrackedData: boolean;
+    searchParams:{
+        query: string;
+        params:{};
+    }
+}
 
 export interface MySession {
     activeDialog?: string;
     dialogData?: Record<string, any>;
-    searchData?: Record<string, any>;
     userInfo?: Record<string, any>;
+    searchData?: SessionSearchData;
+    TrackingMenu?: Array<{
+        query: string;
+        uuid: string;
+        resultsCount:number;
+    }>;
 }
 
 export type MyContext = Context & SessionFlavor<MySession> & I18nFlavor;
@@ -25,7 +41,8 @@ export class TgBotService implements OnModuleInit {
        private readonly menuService: MenuService,
        private readonly dialogService: DialogService,
        private readonly authService: AuthService,
-       private readonly roleGuard: RoleGuard
+       private readonly roleGuard: RoleGuard,
+        private readonly commandService: CommandService,
     ) {
         this.bot = new Bot<MyContext>(process.env.TG_BOT_TOKEN);
     }
@@ -41,7 +58,20 @@ export class TgBotService implements OnModuleInit {
         this.bot.use(session<MySession, MyContext>({
             initial: () => {
                 console.log('Initializing session');
-                return { activeDialog: undefined, dialogData: {} };
+                return {
+                    activeDialog: undefined,
+                    dialogData: {},
+                    searchData: {
+                        dataTransformedToMenu: [],
+                        data: [],
+                        checkTrackedData:false,
+                        searchParams:{
+                            query:"",
+                            params:{},
+                        }
+                    },
+                    TrackingMenu:[],
+                };
             }
         }));
 
@@ -61,7 +91,18 @@ export class TgBotService implements OnModuleInit {
         this.bot.command('access', async (ctx) => {
             await this.roleGuard.checkRoles(ctx, ['admin', 'moderator']) // Якщо в користувача є хоч одна з масиву, то доступ надається
             ctx.reply("Access granted")
+        });
 
+        this.bot.command('startT', async (ctx) => {
+            await this.commandService.handle("start-t",ctx)
+        });
+
+        this.bot.command('stopT', async (ctx) => {
+            await this.commandService.handle("stop-t",ctx)
+        });
+
+        this.bot.command('getT', async (ctx) => {
+            await this.commandService.handle("get-t",ctx)
         })
 
         this.bot.on("message", async (ctx) => {
@@ -75,7 +116,7 @@ export class TgBotService implements OnModuleInit {
         this.bot.start();
     }
 
-    initAllMenu(){
+    initAllMenu() {
 
         const mainMenu = this.menuService.getMenuClass("main-menu").getMenu()
 
