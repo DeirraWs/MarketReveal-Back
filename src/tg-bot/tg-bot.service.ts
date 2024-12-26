@@ -1,18 +1,21 @@
 // bot/bot.service.ts
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import {Bot, Context, session, SessionFlavor} from 'grammy';
 import { MenuService } from './menu/menu.service';
 import {DialogService} from "./dialog/dialog.service";
+import { I18n, I18nFlavor } from "@grammyjs/i18n";
 import * as process from "node:process";
 import { AuthService } from 'src/auth/auth.service';
+import { RoleGuard} from 'src/auth/guard/roles-guard';
 
 export interface MySession {
     activeDialog?: string;
     dialogData?: Record<string, any>;
     searchData?: Record<string, any>;
+    userInfo?: Record<string, any>;
 }
 
-export type MyContext = Context & SessionFlavor<MySession>;
+export type MyContext = Context & SessionFlavor<MySession> & I18nFlavor;
 
 @Injectable()
 export class TgBotService implements OnModuleInit {
@@ -21,14 +24,19 @@ export class TgBotService implements OnModuleInit {
     constructor(
        private readonly menuService: MenuService,
        private readonly dialogService: DialogService,
-       private readonly authService: AuthService
+       private readonly authService: AuthService,
+       private readonly roleGuard: RoleGuard
     ) {
         this.bot = new Bot<MyContext>(process.env.TG_BOT_TOKEN);
     }
 
     onModuleInit() {
 
-        this.menuService.getMenuClass("main-menu").getMenu()
+        const i18n = new I18n<MyContext>({
+            defaultLocale: "en",
+            useSession: true,
+            directory: "locales",
+        });
 
         this.bot.use(session<MySession, MyContext>({
             initial: () => {
@@ -37,17 +45,24 @@ export class TgBotService implements OnModuleInit {
             }
         }));
 
-        for (const menu of this.menuService.getAllMenuToRegisterInBot()) {
-            this.bot.use(menu)
-        }
+        this.bot.use(i18n);
+
+        this.initAllMenu();
 
         this.bot.command('start', async (ctx) => {
             const userInfo = this.authService.extractUserInfo(ctx);
             await this.authService.registration(ctx, userInfo);
-            await ctx.reply('Welcome',{
+            await ctx.reply(ctx.t("greeting"),{
                 reply_markup: this.menuService.getMenuClass("main-menu").getMenu()
             });
         });
+
+        //Тестова команда, для перевірки RoleGuard(Буде видалена)
+        this.bot.command('access', async (ctx) => {
+            await this.roleGuard.checkRoles(ctx, ['admin', 'moderator']) // Якщо в користувача є хоч одна з масиву, то доступ надається
+            ctx.reply("Access granted")
+
+        })
 
         this.bot.on("message", async (ctx) => {
             await this.dialogService.processMessage(ctx);
@@ -59,6 +74,18 @@ export class TgBotService implements OnModuleInit {
 
         this.bot.start();
     }
+
+    initAllMenu(){
+
+        const mainMenu = this.menuService.getMenuClass("main-menu").getMenu()
+
+        for (const menu of this.menuService.getAllMenuToRegisterInBot()) {
+            mainMenu.register(menu.getMenu())
+        }
+
+        this.bot.use(mainMenu)
+    }
+
 }
 
 

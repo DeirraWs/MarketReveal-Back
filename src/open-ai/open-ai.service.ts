@@ -1,6 +1,4 @@
 import OpenAI from "openai";
-import { z } from "zod";
-import { zodResponseFormat } from "openai/helpers/zod";
 import { Injectable } from '@nestjs/common';
 import * as process from 'node:process';
 
@@ -11,34 +9,34 @@ export class OpenAIService {
   constructor() {
     const apiKey = process.env.AI_TOKEN;
     this.openAI = new OpenAI({
-      apiKey,
+      organization: "org-gNBEYduqM2QCvDvPRXkQXzAG",
+      project: "proj_am0EqRyJszrzix303TocfmEr",
+      apiKey: apiKey
     });
   }
 
   async getSimilarWords(product: string): Promise<string[]> {
-    const outputSchema = z.object({
-      final_answer: z.array(z.string()),
-    });
 
-    const prompt = `
-      The user is searching for a product on a marketplace like OLX. 
-      Given the input "${product}", generate a list of alternative terms, synonyms, and possible corrections to help improve search results. 
-      Focus on common typos, abbreviations, and alternative names used for this product.
-      Provide the list as an array of strings.
-    `;
+    const prompt = `Generate a list of alternative terms and synonyms for "${product}" to improve search results.Return array of strings 5 best variant splits coma `;
 
     try {
-      const completion = await this.openAI.beta.chat.completions.parse({
-        model: "gpt-3.5-turbo",
+      const completion = await this.openAI.chat.completions.create({
+        model: "gpt-4-turbo",
         messages: [
-          { role: "system", content: "You are an AI that generates synonyms and related terms for product searches." },
+          { role: "system", content: "You are a synonym generator for search on market place." },
           { role: "user", content: prompt },
         ],
-        temperature: 0.7,
-        response_format: zodResponseFormat(outputSchema, "product_search_suggestions"),
+        temperature: 1,
+        max_tokens: 100,
       });
 
-      return completion.choices[0].message.parsed.final_answer;
+      const parsed = completion.choices[0].message.content;
+
+      const variants: string[] = JSON.parse(parsed);
+
+      console.log(variants.join(", "));
+
+      return variants;
     } catch (error) {
       console.error("Error fetching suggestions:", error);
       throw new Error("Failed to fetch similar words");

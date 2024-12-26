@@ -1,43 +1,29 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { ROLES_KEY } from "./roles-auth.decorator";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { UsersService } from "src/users/users.service";
 import { MyContext } from "src/tg-bot/tg-bot.service";
 
 @Injectable()
-export class RolesGuard implements CanActivate {
-    constructor(
-        private reflector: Reflector,
-        private usersService: UsersService
-    ) {}
+export class RoleGuard {
+    constructor(private readonly usersService: UsersService) {}
 
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-        
-        const requiredRoles = this.reflector.get<string[]>(ROLES_KEY, context.getHandler());
+    async checkRoles(ctx: MyContext, requiredRoles: string[]): Promise<boolean> {
+        const telegramUserId = ctx.message?.from.id;
 
-        if (!requiredRoles) {
-            return true;
-        }
-
-        
-        const ctx = context.switchToRpc().getContext<MyContext>();
-        const telegramUserId = ctx?.from?.id;
         if (!telegramUserId) {
-            throw new ForbiddenException('Unable to extract user ID from Telegram context');
+            throw new ForbiddenException('User ID is not found in session');
         }
 
-        
         const user = await this.usersService.getUserByTelegramId(telegramUserId);
 
         if (!user) {
             throw new ForbiddenException('User not found in the system');
         }
 
-        
         const userRoles = user.roles?.map((role) => role.value);
         const hasRequiredRole = requiredRoles.some((role) => userRoles.includes(role));
 
         if (!hasRequiredRole) {
+            ctx.reply('Access denied')
             throw new ForbiddenException('Access denied');
         }
 

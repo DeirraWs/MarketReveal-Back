@@ -25,7 +25,7 @@ export class dictionaryDialog extends Dialog{
       dialogData.searchName = ctx.message?.text;
       try {
         const synonyms = await this.openAiService.getSimilarWords(dialogData.searchName)
-        await ctx.reply(`${synonyms.join(', ')}`);
+        await ctx.reply(`${synonyms}`);
         await this.end(ctx)
       } catch (e){
         await ctx.reply("Процес закінчений з помилкою")

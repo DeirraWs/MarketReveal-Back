@@ -4,8 +4,8 @@ import {CommandModule} from "./command/command.module";
 import {MenuModule} from "./menu/menu.module";
 import {DialogModule} from "./dialog/dialog.module";
 import { SearchManageModule } from '../search/search-manage/search-manage.module';
+import { AccountModule } from './account/account.module';
 import { AuthModule } from 'src/auth/auth.module';
-
 
 
 @Module({
@@ -15,6 +15,7 @@ import { AuthModule } from 'src/auth/auth.module';
       MenuModule,
       DialogModule,
       SearchManageModule,
+      AccountModule,
       AuthModule
   ],
     exports: [

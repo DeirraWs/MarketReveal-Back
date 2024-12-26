@@ -5,12 +5,14 @@ import {forwardRef} from '@nestjs/common';
 import {CommandModule} from "../tg-bot/command/command.module";
 import {DialogModule} from "../tg-bot/dialog/dialog.module";
 import {MenuModule} from "../tg-bot/menu/menu.module";
+import { RoleGuard } from './guard/roles-guard';
 
 
 @Module({
     providers:
         [
-            AuthService
+            AuthService,
+            RoleGuard
         ],
     imports: [
         forwardRef(() => UsersModule),
@@ -19,7 +21,8 @@ import {MenuModule} from "../tg-bot/menu/menu.module";
         MenuModule
     ],
     exports: [
-        AuthService    
+        AuthService,
+        RoleGuard  
     ]
 })
 export class AuthModule {

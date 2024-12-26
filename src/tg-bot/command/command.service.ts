@@ -5,11 +5,11 @@ import {MyContext} from "../tg-bot.service";
 
 export abstract class Handler {
 
-    abstract handlerLogic(context: MyContext): Promise<any>;
+    abstract handlerLogic(context: MyContext, data?: any): Promise<any>;
 
-    async handle(context: MyContext): Promise<any> {
+    async handle(context: MyContext,data? : any): Promise<any> {
         try {
-            return await this.handlerLogic(context);
+            return await this.handlerLogic(context,data);
         } catch (e) {
             console.error(e);
             throw new Error("Handler error: " + e.message);
@@ -23,9 +23,9 @@ export class CommandService {
 
     private readonly handlers: Map<string, Handler> = new Map()
 
-    async handle (name: string, context: MyContext): Promise<void> {
+    async handle (name: string, context: MyContext, data? :any): Promise<void> {
         const handler = this.handlers.get(name);
-        return  await handler.handle(context)
+        return  await handler.handle(context,data)
     }
 
     addHandler(name:string, handler: Handler){

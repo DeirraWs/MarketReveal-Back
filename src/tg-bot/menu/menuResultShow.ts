@@ -22,7 +22,7 @@ export default class MenuPagination extends MenuStructure{
   creteMenu() {
     this._menu = new Menu<MyContext>('pagination-menu', { onMenuOutdated: false })
       .text(
-        { text: '← Previous', payload: (ctx) => this._pageMovement(false, ctx.match,ctx) },
+        { text: ctx => ctx.t("menu_result_show_prev_btn"), payload: (ctx) => this._pageMovement(false, ctx.match,ctx) },
         async (ctx) => {
           const newPayload = this._parsePayload(String(ctx.match));
           if (newPayload.prevPayload !== newPayload.payload) {
@@ -33,7 +33,7 @@ export default class MenuPagination extends MenuStructure{
         },
       )
       .text(
-        { text: 'Next →', payload: (ctx) => this._pageMovement(true, ctx.match,ctx) },
+        { text: ctx => ctx.t("menu_result_show_next_btn"), payload: (ctx) => this._pageMovement(true, ctx.match,ctx) },
         async (ctx) => {
           const newPayload = this._parsePayload(String(ctx.match));
           if (newPayload.prevPayload !== newPayload.payload) {
@@ -45,7 +45,7 @@ export default class MenuPagination extends MenuStructure{
       ).row()
       .text(
         {
-          text: ctx => ctx.from && this._parsePayload(String(ctx.match)).extended ? 'Back' : 'More info',
+          text: ctx => ctx.from && this._parsePayload(String(ctx.match)).extended ? ctx.t("menu_result_show_normal_btn") : ctx.t("menu_result_show_extended_btn"),
           payload:(ctx)=> this._toggleButton(ctx),
         },
         async (ctx) => {
@@ -61,7 +61,7 @@ export default class MenuPagination extends MenuStructure{
           }
         },
       ).row()
-      .text("Припинити перегляд", async (ctx) => {
+      .text(ctx => ctx.t("menu_result_show_stop_btn"), async (ctx) => {
           await this.commandService.handle("stop-result-search",ctx)
       })
   }
