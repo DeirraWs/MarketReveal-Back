@@ -18,7 +18,6 @@ export class SearchResultShowHandler extends Handler {
   }
 
   async handlerLogic(context: MyContext): Promise<any> {
-
     context.session.searchData.dataTransformedToMenu = this._createCorrectFormatOfResult(context.session.searchData.data, context);
     await context.reply(this.menuPagination.getStartInfo(context),{
       reply_markup: this.menuService.getMenuClass("menu-pagination").getMenu()

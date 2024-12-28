@@ -33,7 +33,7 @@ import { RedisModule } from './redis/redis.module';
           models:[User,Role,UserRoles],
           autoLoadModels: true,
           synchronize: true,
-          //sync: { force: true },
+          sync: { force: true },
       })
     , UsersModule, RolesModule, AuthModule, TgBotModule, SearchManageModule, DictionaryModule, OpenAiModule, OffersTrackingModule, RedisModule],
   controllers: [AppController],

@@ -16,7 +16,17 @@ export interface SessionSearchData{
     searchParams:{
         query: string;
         params:{};
+    };
+    paginationMenu:{
+        page: number;
+        additionalData: Array<any>;
     }
+}
+
+export interface TrackingMenuElementData{
+    query: string;
+    uuid: string;
+    resultsCount:number;
 }
 
 export interface MySession {
@@ -24,11 +34,7 @@ export interface MySession {
     dialogData?: Record<string, any>;
     userInfo?: Record<string, any>;
     searchData?: SessionSearchData;
-    TrackingMenu?: Array<{
-        query: string;
-        uuid: string;
-        resultsCount:number;
-    }>;
+    TrackingMenu?: TrackingMenuElementData[];
 }
 
 export type MyContext = Context & SessionFlavor<MySession> & I18nFlavor;
@@ -55,25 +61,7 @@ export class TgBotService implements OnModuleInit {
             directory: "locales",
         });
 
-        this.bot.use(session<MySession, MyContext>({
-            initial: () => {
-                console.log('Initializing session');
-                return {
-                    activeDialog: undefined,
-                    dialogData: {},
-                    searchData: {
-                        dataTransformedToMenu: [],
-                        data: [],
-                        checkTrackedData:false,
-                        searchParams:{
-                            query:"",
-                            params:{},
-                        }
-                    },
-                    TrackingMenu:[],
-                };
-            }
-        }));
+        this.initSession();
 
         this.bot.use(i18n);
 
@@ -93,17 +81,6 @@ export class TgBotService implements OnModuleInit {
             ctx.reply("Access granted")
         });
 
-        this.bot.command('startT', async (ctx) => {
-            await this.commandService.handle("start-t",ctx)
-        });
-
-        this.bot.command('stopT', async (ctx) => {
-            await this.commandService.handle("stop-t",ctx)
-        });
-
-        this.bot.command('getT', async (ctx) => {
-            await this.commandService.handle("get-t",ctx)
-        })
 
         this.bot.on("message", async (ctx) => {
             await this.dialogService.processMessage(ctx);
@@ -125,6 +102,32 @@ export class TgBotService implements OnModuleInit {
         }
 
         this.bot.use(mainMenu)
+    }
+
+    initSession(){
+        this.bot.use(session<MySession, MyContext>({
+            initial: () => {
+                console.log('Initializing session');
+                return {
+                    activeDialog: undefined,
+                    dialogData: {},
+                    searchData: {
+                        dataTransformedToMenu: [],
+                        data: [],
+                        checkTrackedData:false,
+                        searchParams:{
+                            query:"",
+                            params:{},
+                        },
+                        paginationMenu:{
+                            page:0,
+                            additionalData:[]
+                        }
+                    },
+                    TrackingMenu:[],
+                };
+            }
+        }));
     }
 
 }
