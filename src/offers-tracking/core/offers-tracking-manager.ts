@@ -2,7 +2,8 @@ import {Inject, Injectable} from '@nestjs/common';
 import { TrackingSession } from './tracking-session';
 import {OffersTrackingResultModelService} from "../model/tracking-result.model.service";
 import {SearchManageService} from "../../search/search-manage/search-manage.service";
-import {RedisCacheService} from "../../redis/redis.service"; // Ваш сервіс бази даних
+import {RedisCacheService} from "../../redis/redis.service";
+import { SearchParams } from '../../tg-bot/tg-bot.service'; // Ваш сервіс бази даних
 
 @Injectable()
 export class TrackingManager {
@@ -14,14 +15,13 @@ export class TrackingManager {
         @Inject() private readonly cacheService: RedisCacheService,
     ) {}
 
-    startTracking(trackID: string, url:string, delay: number): void {
-        console.log("Start tracking", url)
+    startTracking(trackID: string, searchParams: SearchParams, delay: number): void {
         if (this.sessions.has(trackID)) {
             console.log(`Tracking already running for trackID: ${trackID}`);
             return;
         }
 
-        const session = new TrackingSession(trackID, delay, url, this.searchService, this.databaseService, this.cacheService);
+        const session = new TrackingSession(trackID, delay,  this.databaseService, this.searchService, searchParams);
         this.sessions.set(trackID, session);
 
         session.start().catch((error) => {
@@ -36,7 +36,7 @@ export class TrackingManager {
             return;
         }
 
-        session.stop().then(r => {});
+        session.stop().then();
         this.sessions.delete(trackID);
     }
 }

@@ -39,5 +39,18 @@ export class RedisCacheService {
     public close(): void {
         this.redisClient.quit();
     }
+
+    public async getKeysByPattern(pattern: string): Promise<string[]> {
+        return new Promise((resolve, reject) => {
+            const stream = this.redisClient.scanStream({ match: pattern });
+            const keys: string[] = [];
+            stream.on('data', (resultKeys) => {
+                keys.push(...resultKeys);
+            });
+            stream.on('end', () => resolve(keys));
+            stream.on('error', (err) => reject(err));
+        });
+    }
+
 }
 

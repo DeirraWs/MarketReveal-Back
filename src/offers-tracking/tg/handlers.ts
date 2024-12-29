@@ -1,6 +1,6 @@
 import {CommandService, Handler} from "../../tg-bot/command/command.service";
 import {Inject, Injectable} from "@nestjs/common";
-import {MyContext} from "../../tg-bot/tg-bot.service";
+import { MyContext, SearchParams } from '../../tg-bot/tg-bot.service';
 import {OffersTrackingService} from "../offers-tracking.service";
 
 @Injectable()
@@ -14,16 +14,13 @@ export class StartTracking extends Handler {
         command.addHandler("start-t",this)
     }
 
-    async handlerLogic(context: MyContext): Promise<any> {
+    async handlerLogic(context: MyContext,searchParams:SearchParams): Promise<any> {
+        console.log(searchParams);
         context.session.TrackingMenu.push({
             query:context.session.searchData.searchParams.query,
-            uuid: await this.trackingService.startTracking(`https://www.olx.ua/uk/elektronika/telefony-i-aksesuary/mobilnye-telefony-smartfony/${this.TMPtransformString(context.session.searchData.searchParams.query)}/?currency=UAH`),
+            uuid: await this.trackingService.startTracking(searchParams),
             resultsCount:0,
         });
-    }
-
-    private TMPtransformString(input: string): string {
-        return `q-${input.trim().replace(/\s+/g, '-')}`;
     }
 
 }

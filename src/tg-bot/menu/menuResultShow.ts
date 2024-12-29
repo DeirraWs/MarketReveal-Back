@@ -67,7 +67,7 @@ export default class MenuPagination extends MenuStructure {
             },
                 async (ctx) => {
                     if (this._toggleButton(ctx,1)) {
-                        await this.commandService.handle('start-t', ctx);
+                        await this.commandService.handle('start-t', ctx, ctx.session.searchData.searchParams);
                     }
                     ctx.menu.update()
                 })

@@ -12,6 +12,13 @@ export interface IPrice {
 @Injectable()
 export default class olxSearchCore extends ISearchCore {
 
+    async getListOfProductsUrls(url:string) : Promise<string[]> {
+        return this.getAllUrlToDetailedInformationFromPage(await this.getHtmlPage(url))
+    }
+
+    async getDetailInformationByProduct(urls:string[]): Promise<Object[]> {
+        return await this.offerParser(urls)
+    }
 
     async getHtmlPage(url: string): Promise<cheerio.Root> {
         try {
@@ -146,19 +153,4 @@ export default class olxSearchCore extends ISearchCore {
         return htmlPage(".css-1o924a9").text();
     }
 
-    async search(urls: [string]): Promise<Object[]> {
-        let links: string[] = []
-        for (const url of urls) {
-            links = [...links, ...this.getAllUrlToDetailedInformationFromPage(await this.getHtmlPage(url))];
-        }
-        return await this.offerParser(links);
-    }
-
-    async getListOfUrls(url:string) : Promise<string[]> {
-        return this.getAllUrlToDetailedInformationFromPage(await this.getHtmlPage(url))
-    }
-
-    async getDetailInformationByProduct(urls:string[]): Promise<Object[]> {
-        return await this.offerParser(urls)
-    }
 }

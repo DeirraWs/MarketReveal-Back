@@ -12,6 +12,9 @@ import olxSearchCore from "../search-modules/olx/olxSearchCore";
 import {SearchResultShowHandler} from './tg/searchResultShowHandler';
 import MenuPagination from '../../tg-bot/menu/menuResultShow';
 import {SearchStopResultShowHandler} from './tg/searchStopResultShowHandler';
+import { CacheSearchModule } from '../cache-search/cache-search.module';
+import { RedisModule } from '../../redis/redis.module';
+import { OlxConvertor } from '../search-modules/olx/olxConvertor';
 
 @Module({
     providers: [
@@ -23,6 +26,7 @@ import {SearchStopResultShowHandler} from './tg/searchStopResultShowHandler';
         SearchManageService,
         olxSearchModule,
         olxSearchCore,
+        OlxConvertor,
 
     ],
     controllers: [SearchManageController],
@@ -30,7 +34,9 @@ import {SearchStopResultShowHandler} from './tg/searchStopResultShowHandler';
         DictionaryModule,
         forwardRef(() => CommandModule),
         DialogModule,
-        MenuModule
+        MenuModule,
+        CacheSearchModule,
+        RedisModule
     ],
     exports: [
         MenuPagination,

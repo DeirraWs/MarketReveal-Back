@@ -1,9 +1,8 @@
 import {Inject, Injectable} from '@nestjs/common';
-import {CommandService, Handler} from '../command/command.service';
+import {CommandService} from '../command/command.service';
 import {Menu, MenuRange} from '@grammyjs/menu';
 import {MyContext} from '../tg-bot.service';
 import {MenuService, MenuStructure} from './menu.service';
-import {getCountOfResults} from "../../offers-tracking/tg/handlers";
 
 @Injectable()
 export class TrackingMenu extends MenuStructure {
@@ -53,7 +52,9 @@ export class TrackingMenu extends MenuStructure {
                 range
                     .row()
                     .text((ctx: MyContext) => ctx.t("tracking-menu-update"),
-                        (ctx) => ctx.menu.update()
+                         (ctx) => {
+                          ctx.menu.update()
+                        }
                     )
                 return range
             })

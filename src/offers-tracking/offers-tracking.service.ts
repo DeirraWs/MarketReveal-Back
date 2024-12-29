@@ -4,6 +4,7 @@ import {IResult} from "./model/tracking-result.model";
 import {TrackingManager} from "./core/offers-tracking-manager";
 import { v4 as uuidv4 } from 'uuid';
 import {OffersTrackingResultModelService} from "./model/tracking-result.model.service";
+import { SearchParams } from '../tg-bot/tg-bot.service';
 
 
 @Injectable()
@@ -15,10 +16,10 @@ export class OffersTrackingService {
     ) {
     }
 
-    async startTracking(url:string): Promise<string> {
+    async startTracking(searchParams:SearchParams): Promise<string> {
         const uuid = uuidv4()
-        this.trackingManager.startTracking(uuid,url,60000)
-        await this.trackingModel.createTrack(uuid,url,{})
+        this.trackingManager.startTracking(uuid,searchParams,60000)
+        await this.trackingModel.createTrack(uuid,searchParams)
         return uuid;
     }
 

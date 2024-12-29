@@ -1,24 +1,26 @@
 import {ISearchModule} from "../ISearchModule";
 import {Product, SearchResult} from "../../types/types";
-import {ISearchCore} from "../ISearchCore";
 import {Inject, Injectable} from "@nestjs/common";
 import olxSearchCore from "./olxSearchCore";
+import { OlxConvertor } from './olxConvertor';
+import { SearchParams } from '../../../tg-bot/tg-bot.service';
+import {ICacheTracking } from '../ICache';
+import { ITrack } from '../ITrack';
+import { Track } from '../Track';
 
 @Injectable()
 export class olxSearchModule extends ISearchModule {
-    _baseUrl: string = "https://www.olx.ua/uk/list";
 
     _productType: {
         string: Product;
     };
 
-    _searchUrls: string[];
-
-    _searchCore: ISearchCore;
-
-    constructor(@Inject() olxSearchCore: olxSearchCore) {
+    constructor(
+      @Inject() private _searchCore: olxSearchCore,
+      //@Inject() private cacheService,
+      @Inject() private _convertor: OlxConvertor,
+    ) {
         super();
-        this._searchCore = olxSearchCore;
     }
 
     canSearch(productType: Product): boolean {
@@ -27,40 +29,15 @@ export class olxSearchModule extends ISearchModule {
         }
     }
 
-    async search(): Promise<SearchResult> {
-        const res = await this._searchCore.search(this._searchUrls);
-        this._searchUrls = [];
-        return this._transformResultToStandardType(res);
-    }
-
-    setFilter(Filter: Object): void {
-        return;
-    }
-
-    setNames(names: string[]): void {
-        const correctNames = this.transformNames(names)
-        this._searchUrls = correctNames.map((value)=>{
-            return this._baseUrl+ `/q-${value}/`
-        })
-    }
-
-    private transformNames(names:string[]):string[] {
-        return names.map((str) => str.replace(/ /g, '-'));
-    }
-
-    private _transformResultToStandardType(result: any): SearchResult {
+    async search(searchParams:SearchParams): Promise<SearchResult> {
         return {
-            resultCode:1,
-            res: result,
-        };
+            resultCode: 1,
+            res: this._convertor.ConvertSearchResultsToStandard(await this._searchCore.getDetailInformationByProduct(await this._searchCore.getListOfProductsUrls(this._convertor.ConvertSearchParamsToUrl(searchParams))))
+        }
     }
 
-    async getListOfUrls(url:string) : Promise<string[]> {
-        return this._searchCore.getListOfUrls(url);
+    createTrack(searchParam: SearchParams, cache: ICacheTracking): ITrack {
+        return new Track(this._searchCore,this._convertor,cache,searchParam);
     }
 
-    async getDetailInformationByProduct(urls:string[]): Promise<SearchResult> {
-        const res = await this._searchCore.getDetailInformationByProduct(urls)
-        return this._transformResultToStandardType(res)
-    }
 }

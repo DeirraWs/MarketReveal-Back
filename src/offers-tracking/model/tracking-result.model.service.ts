@@ -3,6 +3,7 @@ import {IResult, TrackingResult} from "./tracking-result.model";
 import {InjectModel} from "@nestjs/sequelize";
 import {ResultStructure} from "../../search/types/types";
 import {v4 as uuidv4} from 'uuid';
+import { SearchParams } from '../../tg-bot/tg-bot.service';
 
 @Injectable()
 export class OffersTrackingResultModelService {
@@ -29,12 +30,12 @@ export class OffersTrackingResultModelService {
         }
     }
 
-    async createTrack(uuid: string, searchQuery: string, searchParameters: Object): Promise<void> {
+    async createTrack(uuid: string, searchParameters: SearchParams): Promise<void> {
         try {
             await this.TrackingResultModel.create({
                 id: uuid,
-                searchQuery: searchQuery,
-                searchParameters: searchParameters,
+                searchQuery: searchParameters.query,
+                searchParameters: searchParameters.params,
             })
         } catch (e) {
             console.log(e)

@@ -13,14 +13,16 @@ export interface SessionSearchData{
     dataTransformedToMenu: string[];
     data: any[];
     checkTrackedData: boolean;
-    searchParams:{
-        query: string;
-        params:{};
-    };
+    searchParams: SearchParams;
     paginationMenu:{
         page: number;
         additionalData: Array<any>;
     }
+}
+
+export interface SearchParams{
+    query: string;
+    params:{};
 }
 
 export interface TrackingMenuElementData{
