@@ -34,7 +34,7 @@ export class SearchDialog extends Dialog {
                 ctx.session.searchData.searchParams.query = dialogData.searchName;
                 ctx.session.searchData.data = await this.searchManager.searchProduct(dialogData.searchName);
                 await ctx.reply(ctx.t("search-process-finish-success"))
-                await this.commandService.handle("start-result-search",ctx)
+                await this.commandService.handle("start-pagination-menu",ctx)
                 await this.end(ctx)
             } catch (e){
                 await ctx.reply(ctx.t("search-process-finish-not-success"))

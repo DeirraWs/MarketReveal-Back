@@ -16,7 +16,7 @@ export class CacheTrackingService extends ICacheTracking {
     return `${this.namespace}:${key}`;
   }
 
-  async getNewUrls(urls: string[]): Promise<string[]> {
+  async getUrlsNotExistedInCache(urls: string[]): Promise<string[]> {
     const newUrls: string[] = [];
     for (const url of urls) {
       const exists = await this.redisCacheService.has(this.getKey(url));

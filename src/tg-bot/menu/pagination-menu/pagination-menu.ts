@@ -1,8 +1,8 @@
 import {Menu} from '@grammyjs/menu';
-import {MyContext} from '../tg-bot.service';
+import {MyContext} from '../../tg-bot.service';
 import {Inject, Injectable} from '@nestjs/common';
-import {CommandService} from '../command/command.service';
-import {MenuService, MenuStructure} from './menu.service';
+import {CommandService} from '../../command/command.service';
+import {MenuService, MenuStructure} from '../menu.service';
 
 const MAX_MESSAGE_LENGTH = 4096;
 
@@ -10,7 +10,7 @@ const MAX_MESSAGE_LENGTH = 4096;
 export default class MenuPagination extends MenuStructure {
 
     constructor(@Inject() private commandService: CommandService,
-                @Inject() private menuService: MenuService,) {
+                @Inject() menuService: MenuService,) {
         super();
         this.createMenu()
         menuService.registerMenu("menu-pagination", this)
@@ -48,10 +48,10 @@ export default class MenuPagination extends MenuStructure {
             ).row()
             .text(
                 {
-                    text: ctx => ctx.session.searchData.paginationMenu.additionalData[0] ? ctx.t("menu_result_show_normal_btn") : ctx.t("menu_result_show_extended_btn"),
+                    text: ctx => ctx.session.searchData.paginationMenu.additionalData[ctx.session.searchData.paginationMenu.page].extended ? ctx.t("menu_result_show_normal_btn") : ctx.t("menu_result_show_extended_btn"),
                 },
                 async (ctx) => {
-                    if (this._toggleButton(ctx,0)) {
+                    if (this._toggleButton(ctx,"extended")) {
                         await ctx.editMessageText(`Extended info of ${this._getItemText(ctx.session.searchData.paginationMenu.page, ctx)}`, {
                             reply_markup: this._menu,
                         });
@@ -63,19 +63,20 @@ export default class MenuPagination extends MenuStructure {
                 },
             ).row()
             .text({
-                text: ctx => ctx.session.searchData.paginationMenu.additionalData[1] ? ctx.t("menu_result_show_tracked_btn") : ctx.t("menu_result_show_track_btn"),
+                text: ctx => ctx.session.searchData.paginationMenu.tracked ? ctx.t("menu_result_show_tracked_btn") : ctx.t("menu_result_show_track_btn"),
             },
                 async (ctx) => {
-                    if (this._toggleButton(ctx,1)) {
+                    if (!ctx.session.searchData.paginationMenu.tracked) {
+                        ctx.session.searchData.paginationMenu.tracked = !ctx.session.searchData.paginationMenu.tracked;
                         await this.commandService.handle('start-t', ctx, ctx.session.searchData.searchParams);
                     }
                     ctx.menu.update()
                 })
             .row()
             .text({
-                text: ctx => ctx.session.searchData.paginationMenu.additionalData[2] ? "❤️" : "🤍",
+                text: ctx => ctx.session.searchData.paginationMenu.additionalData[ctx.session.searchData.paginationMenu.page].favorite ? "❤️" : "🤍",
             }, async (ctx) => {
-                if (this._toggleButton(ctx,2)){
+                if (this._toggleButton(ctx,"favorite")){
                     //await this.commandService.handle('', ctx);
                 } else {
                     //await this.commandService.handle('', ctx);
@@ -84,7 +85,7 @@ export default class MenuPagination extends MenuStructure {
             })
             .row()
             .text(ctx => ctx.t("menu_result_show_stop_btn"), async (ctx) => {
-                await this.commandService.handle("stop-result-search", ctx)
+                await this.commandService.handle("stop-pagination-menu", ctx)
             })
     }
 
@@ -96,7 +97,7 @@ export default class MenuPagination extends MenuStructure {
         return ` ${index + 1}/${context.session.searchData.dataTransformedToMenu.length}  \n` + this._checkMessageToLongReturnShorter(context.session.searchData.dataTransformedToMenu[index]);
     }
 
-    private _checkMessageToLongReturnShorter(text): string {
+    private _checkMessageToLongReturnShorter(text: string): string {
         if (text.length > MAX_MESSAGE_LENGTH) {
             return  text.slice(0, MAX_MESSAGE_LENGTH - 3) + "...";
         }
@@ -122,8 +123,13 @@ export default class MenuPagination extends MenuStructure {
         return  nextPage >= 0 && nextPage <= ctx.session.searchData.dataTransformedToMenu.length
     }
 
-    private _toggleButton(ctx:MyContext,indexInAdditionalData:number) : boolean{
-        return  ctx.session.searchData.paginationMenu.additionalData[indexInAdditionalData] = !ctx.session.searchData.paginationMenu.additionalData[indexInAdditionalData];
+    private _toggleButton(ctx:MyContext, valueToChange:string) : boolean{
+        let elementData = ctx.session.searchData.paginationMenu.additionalData[ctx.session.searchData.paginationMenu.page];
+
+        if (!elementData)
+            elementData = {favorite: false, extended:false}
+
+        return elementData[valueToChange] = !elementData[valueToChange];
     }
 
 }

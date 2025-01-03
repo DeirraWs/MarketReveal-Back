@@ -60,7 +60,7 @@ export class GetTracking extends Handler {
         }]
         context.session.searchData.checkTrackedData = true;
         await this.command.handle('clear-checked-data-t',context,uuid,res.length);
-        await this.command.handle("start-result-search",context)
+        await this.command.handle("start-pagination-menu",context)
     }
 }
 

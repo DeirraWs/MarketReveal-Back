@@ -8,7 +8,7 @@ export abstract class ICache {
 
 export abstract class ICacheTracking {
 
-  abstract getNewUrls(urls: string[]): Promise<string[]>
+  abstract getUrlsNotExistedInCache(urls: string[]): Promise<string[]>
   abstract clearAllCache(): Promise<void>
 
 }

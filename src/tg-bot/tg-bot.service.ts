@@ -16,7 +16,11 @@ export interface SessionSearchData{
     searchParams: SearchParams;
     paginationMenu:{
         page: number;
-        additionalData: Array<any>;
+        tracked: boolean;
+        additionalData: Array<{
+            extended: boolean;
+            favorite: boolean;
+        }>;
     }
 }
 
@@ -80,7 +84,7 @@ export class TgBotService implements OnModuleInit {
         //Тестова команда, для перевірки RoleGuard(Буде видалена)
         this.bot.command('access', async (ctx) => {
             await this.roleGuard.checkRoles(ctx, ['admin', 'moderator']) // Якщо в користувача є хоч одна з масиву, то доступ надається
-            ctx.reply("Access granted")
+            await ctx.reply("Access granted")
         });
 
 
@@ -123,6 +127,7 @@ export class TgBotService implements OnModuleInit {
                         },
                         paginationMenu:{
                             page:0,
+                            tracked:false,
                             additionalData:[]
                         }
                     },

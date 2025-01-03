@@ -9,9 +9,7 @@ import {CommandModule} from "../../tg-bot/command/command.module";
 import {DialogModule} from "../../tg-bot/dialog/dialog.module";
 import {MenuModule} from "../../tg-bot/menu/menu.module";
 import olxSearchCore from "../search-modules/olx/olxSearchCore";
-import {SearchResultShowHandler} from './tg/searchResultShowHandler';
-import MenuPagination from '../../tg-bot/menu/menuResultShow';
-import {SearchStopResultShowHandler} from './tg/searchStopResultShowHandler';
+import MenuPagination from '../../tg-bot/menu/pagination-menu/pagination-menu';
 import { CacheSearchModule } from '../cache-search/cache-search.module';
 import { RedisModule } from '../../redis/redis.module';
 import { OlxConvertor } from '../search-modules/olx/olxConvertor';
@@ -19,8 +17,6 @@ import { OlxConvertor } from '../search-modules/olx/olxConvertor';
 @Module({
     providers: [
         MenuPagination,
-        SearchResultShowHandler,
-        SearchStopResultShowHandler,
         SearchHandler,
         SearchDialog,
         SearchManageService,
