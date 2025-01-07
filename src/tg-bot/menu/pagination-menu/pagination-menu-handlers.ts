@@ -23,8 +23,6 @@ export class StartPaginationMenu extends Handler {
 
     this._initPaginationMenuVisualData(context);
 
-    console.log(context.session.searchData.paginationMenu.additionalData);
-
     const menu = this.menuService.getMenuClass("menu-pagination");
 
     await context.reply(this.menuPagination.getStartInfo(context),{
@@ -79,14 +77,18 @@ export class StopPaginationMenu extends Handler {
 
   async handlerLogic(context: MyContext): Promise<any> {
 
-    if (context.session.searchData.checkTrackedData){
-      context.session.searchData.checkTrackedData = false;
+    context.session.searchData.paginationMenu.page = 0;
+    context.session.searchData.paginationMenu.additionalData = [];
+
+    if (context.session.searchData.paginationMenu.currentTrackedUUID) {
+      context.session.searchData.paginationMenu.currentTrackedUUID = null;
       await context.reply("da",{
         reply_markup: this.menuService.getMenuClass("tracking-menu").getMenu()
       })
       return;
     }
 
+    context.session.searchData.paginationMenu.currentTrackedUUID = null;
 
     context.session.searchData.dataTransformedToMenu = [];
     await context.reply(context.t('main_menu_text'),{

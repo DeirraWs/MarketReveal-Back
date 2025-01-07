@@ -2,6 +2,7 @@ import {CommandService, Handler} from "../../tg-bot/command/command.service";
 import {Inject, Injectable} from "@nestjs/common";
 import { MyContext, SearchParams } from '../../tg-bot/tg-bot.service';
 import {OffersTrackingService} from "../offers-tracking.service";
+import { Track } from '../../search/search-modules/Track';
 
 @Injectable()
 export class StartTracking extends Handler {
@@ -15,12 +16,13 @@ export class StartTracking extends Handler {
     }
 
     async handlerLogic(context: MyContext,searchParams:SearchParams): Promise<any> {
-        console.log(searchParams);
+        const newTrackUUID = await this.trackingService.startTracking(searchParams)
         context.session.TrackingMenu.push({
             query:context.session.searchData.searchParams.query,
-            uuid: await this.trackingService.startTracking(searchParams),
+            uuid: newTrackUUID,
             resultsCount:0,
         });
+        return newTrackUUID;
     }
 
 }
@@ -37,6 +39,7 @@ export class StopTracking extends Handler {
     }
 
     async handlerLogic(context: MyContext,uuid:string): Promise<any> {
+        context.session.TrackingMenu = context.session.TrackingMenu.filter((data)=> data.uuid !== uuid)
         await this.trackingService.stopTracking(uuid)
     }
 }
@@ -58,7 +61,7 @@ export class GetTracking extends Handler {
             resultCode:1,
             res:res,
         }]
-        context.session.searchData.checkTrackedData = true;
+        context.session.searchData.paginationMenu.currentTrackedUUID = uuid;
         await this.command.handle('clear-checked-data-t',context,uuid,res.length);
         await this.command.handle("start-pagination-menu",context)
     }

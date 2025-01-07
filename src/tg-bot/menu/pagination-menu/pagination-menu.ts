@@ -63,12 +63,14 @@ export default class MenuPagination extends MenuStructure {
                 },
             ).row()
             .text({
-                text: ctx => ctx.session.searchData.paginationMenu.tracked ? ctx.t("menu_result_show_tracked_btn") : ctx.t("menu_result_show_track_btn"),
+                text: ctx => ctx.session.searchData.paginationMenu.currentTrackedUUID ? ctx.t("menu_result_show_tracked_btn") : ctx.t("menu_result_show_track_btn"),
             },
                 async (ctx) => {
-                    if (!ctx.session.searchData.paginationMenu.tracked) {
-                        ctx.session.searchData.paginationMenu.tracked = !ctx.session.searchData.paginationMenu.tracked;
-                        await this.commandService.handle('start-t', ctx, ctx.session.searchData.searchParams);
+                    if (ctx.session.searchData.paginationMenu.currentTrackedUUID === null) {
+                        ctx.session.searchData.paginationMenu.currentTrackedUUID = await this.commandService.handle('start-t', ctx, ctx.session.searchData.searchParams);
+                    } else {
+                        await this.commandService.handle('stop-t', ctx, ctx.session.searchData.searchParams);
+                        ctx.session.searchData.paginationMenu.currentTrackedUUID = null
                     }
                     ctx.menu.update()
                 })

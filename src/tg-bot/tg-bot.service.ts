@@ -8,15 +8,15 @@ import * as process from "node:process";
 import { AuthService } from 'src/auth/auth.service';
 import { RoleGuard} from 'src/auth/guard/roles-guard';
 import {CommandService} from "./command/command.service";
+import { number } from 'zod';
 
 export interface SessionSearchData{
     dataTransformedToMenu: string[];
     data: any[];
-    checkTrackedData: boolean;
     searchParams: SearchParams;
     paginationMenu:{
         page: number;
-        tracked: boolean;
+        currentTrackedUUID: string | null;
         additionalData: Array<{
             extended: boolean;
             favorite: boolean;
@@ -120,14 +120,13 @@ export class TgBotService implements OnModuleInit {
                     searchData: {
                         dataTransformedToMenu: [],
                         data: [],
-                        checkTrackedData:false,
                         searchParams:{
                             query:"",
                             params:{},
                         },
                         paginationMenu:{
                             page:0,
-                            tracked:false,
+                            currentTrackedUUID:null,
                             additionalData:[]
                         }
                     },

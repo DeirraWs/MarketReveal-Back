@@ -1,5 +1,7 @@
 greeting = Ласкаво просимо до MarketReveal!
 
+back-button = Назад
+
 //Main menu
 
 main_menu_text = Головне меню
