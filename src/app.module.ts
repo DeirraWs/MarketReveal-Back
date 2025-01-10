@@ -16,6 +16,7 @@ import { DictionaryModule } from './search/dictionary/dictionary.module';
 import { OpenAiModule } from './open-ai/open-ai.module';
 import { OffersTrackingModule } from './offers-tracking/offers-tracking.module';
 import { RedisModule } from './redis/redis.module';
+import { FavouriteProductModule } from './favourite-product/favourite-product.module';
 
 @Module({
   imports: [
@@ -33,9 +34,9 @@ import { RedisModule } from './redis/redis.module';
           models:[User,Role,UserRoles],
           autoLoadModels: true,
           synchronize: true,
-          sync: { force: true },
+          sync: { force: false },
       })
-    , UsersModule, RolesModule, AuthModule, TgBotModule, SearchManageModule, DictionaryModule, OpenAiModule, OffersTrackingModule, RedisModule],
+    , UsersModule, RolesModule, AuthModule, TgBotModule, SearchManageModule, DictionaryModule, OpenAiModule, OffersTrackingModule, RedisModule, FavouriteProductModule],
   controllers: [AppController],
   providers: [AppService],
 })

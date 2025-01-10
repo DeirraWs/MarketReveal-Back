@@ -7,6 +7,7 @@ main_menu_account_btn = 同义词临时
 main_menu_account1_btn = 帐户
 main_menu_search_btn = 搜索
 main_menu_help_btn = 帮助
+main_menu_view_favourite_products_btn = 最喜爱的产品
 
 //Search dialog
 

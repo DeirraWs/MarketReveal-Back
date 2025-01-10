@@ -10,6 +10,7 @@ main_menu_account1_btn = Аккаунт
 main_menu_search_btn = Пошук
 main_menu_help_btn = Допомога
 main_menu_tracking_btn = Відслідковуванні товари
+main_menu_view_favourite_products_btn = Вподобані товари
 
 //Search dialog
 

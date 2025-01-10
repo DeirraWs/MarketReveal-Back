@@ -79,9 +79,9 @@ export default class MenuPagination extends MenuStructure {
                 text: ctx => ctx.session.searchData.paginationMenu.additionalData[ctx.session.searchData.paginationMenu.page].favorite ? "❤️" : "🤍",
             }, async (ctx) => {
                 if (this._toggleButton(ctx,"favorite")){
-                    //await this.commandService.handle('', ctx);
+                    await this.commandService.handle('add-to-favourite', ctx);
                 } else {
-                    //await this.commandService.handle('', ctx);
+                    await this.commandService.handle('delete-from-favourites', ctx);
                 }
                 ctx.menu.update();
             })

@@ -10,6 +10,7 @@ main_menu_account1_btn = Account
 main_menu_search_btn = Search
 main_menu_help_btn = Help
 main_menu_tracking_btn = Tracked
+main_menu_view_favourite_products_btn = Favourite products
 
 
 //Search dialog

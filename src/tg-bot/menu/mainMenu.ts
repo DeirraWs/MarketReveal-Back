@@ -43,6 +43,11 @@ export class MainMenu extends MenuStructure {
             .text({text: ctx => ctx.t("main_menu_account_btn")}, async (ctx) => {
                 await this.commandManagerService.handle("search-synonyms", ctx);
             })
+            .text(
+                { text: ctx => ctx.t('main_menu_view_favourite_products_btn') }, async (ctx) => {
+                  await this.commandManagerService.handle('view-favourite-products', ctx);
+                },
+              ).row()
     }
 
     getMenu(): Menu<MyContext> {
