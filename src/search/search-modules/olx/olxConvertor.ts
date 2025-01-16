@@ -7,7 +7,7 @@ import { SearchParams } from '../../../tg-bot/tg-bot.service';
 @Injectable()
 export class OlxConvertor extends IConvertor {
 
-  _baseUrl: string = "https://www.olx.ua/uk";
+  _baseUrl: string = "https://www.olx.ua/api/v1/offers/?";
 
   ConvertSearchParamsToUrl(searchParams: SearchParams): string {
     if (searchParams.params) {
@@ -38,10 +38,10 @@ export class OlxConvertor extends IConvertor {
   }
 
   private _setOnlyQuery( query: string): string{
-    return  `${this._baseUrl}/q-${this._convertStringToUrlForm(query)}/`
+    return  `${this._baseUrl}offset=0&limit=40&query=${this._convertStringToUrlForm(query)}&currency=UAH&filter_refiners=spell_checker&suggest_filters=true`
   }
 
   private _convertStringToUrlForm(query: string): string {
-    return query.replace(/ /g, '-');
+    return query.replace(/ /g, '%20');
   }
 }

@@ -32,6 +32,8 @@ export class SearchManageService {
             )
             finalRes.push(searchResult)
         }
+
+
         return finalRes;
     }
 

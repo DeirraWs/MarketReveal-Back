@@ -32,7 +32,7 @@ export class olxSearchModule extends ISearchModule {
     async search(searchParams:SearchParams): Promise<SearchResult> {
         return {
             resultCode: 1,
-            res: this._convertor.ConvertSearchResultsToStandard(await this._searchCore.getDetailInformationByProduct(await this._searchCore.getListOfProductsUrls(this._convertor.ConvertSearchParamsToUrl(searchParams))))
+            res: this._convertor.ConvertSearchResultsToStandard(await this._searchCore.getDetailInformationByProduct([this._convertor.ConvertSearchParamsToUrl(searchParams)]))
         }
     }
 
