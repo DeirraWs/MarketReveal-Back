@@ -9,6 +9,13 @@ main_menu_search_btn = 搜索
 main_menu_help_btn = 帮助
 main_menu_view_favourite_products_btn = 最喜爱的产品
 
+//Search filters
+
+search_filters_text = 添加过滤器
+
+search_filter_min_price = 最低价格
+search_filter_max_price = 最高价格
+
 //Search dialog
 
 search-process-question = 输入您想要查找的产品名称

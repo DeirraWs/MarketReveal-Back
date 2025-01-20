@@ -7,39 +7,54 @@ services:
     build:
       context: .
     env_file:
-      - .release.env
+      - .development.env
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - 7000:7000
-      - 9229:9299
+      - "7000:7000"
+      - "9229:9299"
     command:
       npm run start:dev
     depends_on:
       - postgres
     restart: always
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    networks:
+      - mr-network
 
   telegram-bot:
     container_name: telegram-bot
     build:
       context: .
     env_file:
-      - .release.env
+      - .development.env
     restart: always
     depends_on:
       - postgres
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    networks:
+      - mr-network
 
   postgres:
     container_name: postgres
     image: postgres:12
     env_file:
-      - .release.env
+      - .development.env
     environment:
       PG_DATA: /var/lib/postgres/data
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: nest
     ports:
-      - 5432:5432
+      - "5432:5432"
     restart: always
+    networks:
+      - mr-network
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -51,4 +66,19 @@ services:
       - "8080:80"
     depends_on:
       - postgres
+    networks:
+      - mr-network
 
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - mr-network
+
+networks:
+  mr-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16

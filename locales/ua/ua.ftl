@@ -12,6 +12,13 @@ main_menu_help_btn = Допомога
 main_menu_tracking_btn = Відслідковуванні товари
 main_menu_view_favourite_products_btn = Вподобані товари
 
+//Search filters
+
+search_filters_text = Додати фільтри
+
+search_filter_min_price = Мінімальна ціна
+search_filter_max_price = Максимальна ціна
+
 //Search dialog
 
 search-process-question = Введіть назву продукту, який ви хочете знайти

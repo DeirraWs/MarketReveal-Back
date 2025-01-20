@@ -6,11 +6,12 @@ import {MainMenu} from './mainMenu';
 import {AccountMenu, ChangeLanguageMenu} from './accountMenu';
 import {TrackingMenu} from "./trackingMenu";
 import { PaginationMenuModule } from './pagination-menu/pagination-menu.module';
+import {ChooseFilterStateMenu, ChooseFilterSubCatMenu, SearchFiltersMenu} from "./searchFiltersMenu";
 
 @Module({
     imports: [
         CommandModule,
-        PaginationMenuModule,
+        PaginationMenuModule
     ],
     providers: [
         MainMenu,
@@ -18,6 +19,9 @@ import { PaginationMenuModule } from './pagination-menu/pagination-menu.module';
         ChangeLanguageMenu,
         MenuService,
         TrackingMenu,
+        SearchFiltersMenu,
+        ChooseFilterStateMenu,
+        ChooseFilterSubCatMenu
     ],
     exports: [MenuService],
 })

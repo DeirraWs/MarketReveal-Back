@@ -26,7 +26,8 @@ export interface SessionSearchData{
 
 export interface SearchParams{
     query: string;
-    params:{};
+    filters: {};
+    params: {};
 }
 
 export interface TrackingMenuElementData{
@@ -122,6 +123,7 @@ export class TgBotService implements OnModuleInit {
                         data: [],
                         searchParams:{
                             query:"",
+                            filters:{},
                             params:{},
                         },
                         paginationMenu:{

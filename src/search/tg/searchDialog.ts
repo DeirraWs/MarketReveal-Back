@@ -29,12 +29,17 @@ export class SearchDialog extends Dialog {
 
         if (!dialogData.searchName) {
             dialogData.searchName = ctx.message?.text;
-            await ctx.reply(ctx.t("search-process-start"))
+            // await ctx.reply(ctx.t("search-process-start"))
             try {
                 ctx.session.searchData.searchParams.query = dialogData.searchName;
-                ctx.session.searchData.data = await this.searchManager.searchProduct(dialogData.searchName);
-                await ctx.reply(ctx.t("search-process-finish-success"))
-                await this.commandService.handle("start-pagination-menu",ctx)
+                await this.commandService.handle('generate-filters-message', ctx);
+
+                // await ctx.reply(ctx.t("ADD FILTERS AND/OR START THE SEARCH"),{
+                //     reply_markup: this.menuService.getMenuClass("search-filters-menu").getMenu()
+                // });
+                // ctx.session.searchData.data = await this.searchManager.searchProduct(dialogData.searchName);
+                // await ctx.reply(ctx.t("search-process-finish-success"))
+                // await this.commandService.handle("start-pagination-menu",ctx)
                 await this.end(ctx)
             } catch (e){
                 await ctx.reply(ctx.t("search-process-finish-not-success"))

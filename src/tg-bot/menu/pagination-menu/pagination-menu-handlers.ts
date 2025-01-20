@@ -26,7 +26,8 @@ export class StartPaginationMenu extends Handler {
     const menu = this.menuService.getMenuClass("menu-pagination");
 
     await context.reply(this.menuPagination.getStartInfo(context),{
-      reply_markup: menu.getMenu()
+      reply_markup: menu.getMenu(),
+      parse_mode: 'Markdown'
     })
   }
 
@@ -35,6 +36,7 @@ export class StartPaginationMenu extends Handler {
     for (const searchResult of res) {
       if (searchResult.resultCode === 1){
         for (const result of searchResult.res) {
+          console.log(result);
           convertedResult.push(this._formatResultToString(result, context));
         }
       }
@@ -45,7 +47,7 @@ export class StartPaginationMenu extends Handler {
   private _formatResultToString(result: ResultStructure, context: MyContext): string {
     return `
 📌 *${result.title}*
-💰 ${context.t('price_text')}: ${result.price.amount} ${result.price.currency}
+💰 ${context.t('price_text')}: ${JSON.stringify(result.price.amount)} ${result.price.currency}
 🕒 ${context.t('time_posted_text')}: ${result.timePosted}
 🔗 [${context.t('view_text')}](${result.url})
 🏷️ ${context.t('tags_text')}: ${result.tags.length > 0 ? result.tags.join(', ') : context.t('no_tags_text')}
