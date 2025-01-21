@@ -4,6 +4,8 @@ import {Inject, Injectable} from "@nestjs/common";
 import {MenuService} from "../../tg-bot/menu/menu.service";
 import {SearchManageService} from "../search-manage/search-manage.service";
 import { CommandService } from '../../tg-bot/command/command.service';
+import { OpenAIService } from '../../open-ai/open-ai.service';
+import { ResultStructure, SearchResult } from '../types/types';
 
 @Injectable()
 export class SearchDialog extends Dialog {
@@ -12,6 +14,7 @@ export class SearchDialog extends Dialog {
     constructor(
         @Inject() private searchManager: SearchManageService ,
         @Inject() private commandService: CommandService ,
+        @Inject() private openai: OpenAIService,
         private readonly dialogService: DialogService,
         readonly menuService: MenuService,
     ) {
@@ -32,9 +35,16 @@ export class SearchDialog extends Dialog {
             await ctx.reply(ctx.t("search-process-start"))
             try {
                 ctx.session.searchData.searchParams.query = dialogData.searchName;
-                ctx.session.searchData.data = await this.searchManager.searchProduct(dialogData.searchName);
-                await ctx.reply(ctx.t("search-process-finish-success"))
-                await this.commandService.handle("start-pagination-menu",ctx)
+                ctx.session.searchData.data = await this.analyzeData(await this.searchManager.searchProduct(dialogData.searchName), dialogData.searchName);
+
+                if ( ctx.session.searchData.data[0].res.length !== 0){
+                    await ctx.reply(ctx.t("search-process-finish-success"))
+                    await this.commandService.handle("start-pagination-menu",ctx)
+                }  else {
+                    await ctx.reply(ctx.t("search-process-empty"));
+                    await this.commandService.handle("start-main-menu",ctx)
+                }
+
                 await this.end(ctx)
             } catch (e){
                 await ctx.reply(ctx.t("search-process-finish-not-success"))
@@ -42,4 +52,22 @@ export class SearchDialog extends Dialog {
             }
         }
     }
+
+    async analyzeData(offers : SearchResult[], query: string): Promise<SearchResult[]> {
+
+        let indexes :number[] =  await this.openai.analyzeOffersByNameSuitabilityToQuery(offers[0].res.map((value)=> {return value.title}),query)
+
+        let sortedOffers = [];
+
+        for (const index of indexes) {
+            sortedOffers.push(offers[0].res[index]);
+        }
+
+        return  [{
+            res: sortedOffers,
+            resultCode:1
+        }]
+    }
+
+
 }

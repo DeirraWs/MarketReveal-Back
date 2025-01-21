@@ -1,8 +1,8 @@
 import {Inject, Injectable} from '@nestjs/common';
-import {CommandService, Handler} from '../command/command.service';
+import {CommandService, Handler} from '../../command/command.service';
 import {Menu} from '@grammyjs/menu';
-import {MyContext} from '../tg-bot.service';
-import {MenuService, MenuStructure} from './menu.service';
+import {MyContext} from '../../tg-bot.service';
+import {MenuService, MenuStructure} from '../menu.service';
 
 class HelpHandler extends Handler {
     async handlerLogic(context: MyContext): Promise<any> {

@@ -19,19 +19,21 @@ export class StartPaginationMenu extends Handler {
   }
 
   async handlerLogic(context: MyContext): Promise<any> {
-    context.session.searchData.dataTransformedToMenu = this._createCorrectFormatOfResult(context.session.searchData.data, context);
 
-    this._initPaginationMenuVisualData(context);
+      context.session.searchData.dataTransformedToMenu = this._createCorrectFormatOfResult(context.session.searchData.data, context);
 
-    const menu = this.menuService.getMenuClass("menu-pagination");
+      this._initPaginationMenuVisualData(context);
 
-    await context.reply(this.menuPagination.getStartInfo(context),{
-      reply_markup: menu.getMenu()
-    })
+      const menu = this.menuService.getMenuClass("menu-pagination");
+
+      await context.reply(this.menuPagination.getStartInfo(context), {
+        reply_markup: menu.getMenu()
+      })
   }
 
   private _createCorrectFormatOfResult(res: SearchResult[], context: MyContext): string[] {
     const convertedResult: string[] = [];
+
     for (const searchResult of res) {
       if (searchResult.resultCode === 1){
         for (const result of searchResult.res) {
@@ -44,14 +46,20 @@ export class StartPaginationMenu extends Handler {
 
   private _formatResultToString(result: ResultStructure, context: MyContext): string {
     return `
-📌 *${result.title}*
+📌 ${result.title}
 💰 ${context.t('price_text')}: ${result.price.amount} ${result.price.currency}
-🕒 ${context.t('time_posted_text')}: ${result.timePosted}
+🕒 ${context.t('time_posted_text')}: ${this._convertData(result.timePosted,context)}
 🔗 [${context.t('view_text')}](${result.url})
 🏷️ ${context.t('tags_text')}: ${result.tags.length > 0 ? result.tags.join(', ') : context.t('no_tags_text')}
 📝 ${context.t('description_text')}:
 ${result.description ? result.description : context.t('no_description_text')}
 `.trim();
+  }
+
+  private _convertData(time: string, ctx: MyContext):string {
+    const [year, month,day] = time.substring(0,9).split('-');
+    const monthName = ctx.t(`month-${month}`);
+    return `${day} ${monthName} ${year}`;
   }
 
   private _initPaginationMenuVisualData(ctx: MyContext): void {
@@ -68,7 +76,7 @@ ${result.description ? result.description : context.t('no_description_text')}
 export class StopPaginationMenu extends Handler {
 
   constructor(
-    @Inject() commandService: CommandService,
+    @Inject() private commandService: CommandService,
     @Inject() private  menuService: MenuService,
   ) {
     super();
@@ -91,9 +99,8 @@ export class StopPaginationMenu extends Handler {
     context.session.searchData.paginationMenu.currentTrackedUUID = null;
 
     context.session.searchData.dataTransformedToMenu = [];
-    await context.reply(context.t('main_menu_text'),{
-      reply_markup: this.menuService.getMenuClass("main-menu").getMenu()
-    })
+
+    await this.commandService.handle("start-main-menu",context)
   }
 
 }

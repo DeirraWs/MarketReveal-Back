@@ -13,6 +13,7 @@ import MenuPagination from '../../tg-bot/menu/pagination-menu/pagination-menu';
 import { CacheSearchModule } from '../cache-search/cache-search.module';
 import { RedisModule } from '../../redis/redis.module';
 import { OlxConvertor } from '../search-modules/olx/olxConvertor';
+import { OpenAiModule } from '../../open-ai/open-ai.module';
 
 @Module({
     providers: [
@@ -32,7 +33,8 @@ import { OlxConvertor } from '../search-modules/olx/olxConvertor';
         DialogModule,
         MenuModule,
         CacheSearchModule,
-        RedisModule
+        RedisModule,
+        OpenAiModule
     ],
     exports: [
         MenuPagination,

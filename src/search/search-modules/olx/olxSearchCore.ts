@@ -1,13 +1,12 @@
 import { ISearchCore } from "../ISearchCore";
 import axios from 'axios';
-import { IOfferDetail } from './types/OfferData';
+import { IOfferDetail, IParam } from './types/OfferData';
 import { Injectable } from "@nestjs/common";
 
 
 export interface IPrice {
     amount: number;
     currency: string;
-    count: number;
 }
 
 @Injectable()
@@ -47,24 +46,54 @@ export default class olxSearchCore extends ISearchCore {
     private parseOfferDetails(data: IOfferDetail): Object {
         if (!data) return null;
 
+        let parsedParams = this._parseParams(data);
+
         return {
             id: data.id,
             title: data.title,
-            price: this.parsePrice(data.params[data.params.length - 1]),
-            description: data.description,
+            price: parsedParams.price,
+            description: this._getDescriptionCorrect(data.description),
             images: data.photos.map((photo: any) => photo.link),
-            timePosted: data.created_time,
-            tags: this._getTags(data),
+            timePosted: data.last_refresh_time,
+            tags: parsedParams.tags,
             url: data.url,
         };
     }
 
-    private _getTags(data: IOfferDetail): string[] {
+    private _parseParams(data: IOfferDetail): {
+        tags: string[]
+        price:IPrice,
+    } {
+        let res: {tags: string[],price:IPrice} = {tags:[],price:{amount:0,currency:"UAH"}};
+
+        if (data.params[0].key === "price"){
+            res.price = this._parsePrice(data.params[0])
+            res.tags = this._getTags(data.params,1,data.params.length-1)
+        } else {
+            res.price = this._parsePrice(data.params[data.params.length - 1])
+            res.tags = this._getTags(data.params,0,data.params.length-2)
+        }
+
+        return res;
+    }
+
+    private _getTags(data: IParam[],startIndex: number, lastIndex: number ): string[] {
         const tags: string[] = [];
-        for (let i = 0; i < data.params.length - 2; i++) {
-            tags.push(`${data.params[i].name}:${data.params[i].value.label}`)
+        for (let i = startIndex; i < lastIndex; i++) {
+            tags.push(`${data[i].name}:${data[i].value.label}`)
         }
         return tags;
+    }
+
+    private _getDescriptionCorrect( description: string ): string {
+        let cleaned = description.replace(/<[^>]*>/g, '');
+
+        cleaned = cleaned.replace(/\\u[0-9A-Fa-f]{4}/g, '');
+        cleaned = cleaned.replace(/\\n/g, '');
+        cleaned = cleaned.replace(/-{3,}/g, '');
+        cleaned = cleaned.replace(/\s{2,}/g, ' ').trim();
+
+        return cleaned;
     }
 
     /**
@@ -72,11 +101,11 @@ export default class olxSearchCore extends ISearchCore {
      * @param {any} priceData - API price data.
      * @returns {IPrice} Parsed price object.
      */
-    private parsePrice(priceData: any): IPrice {
+
+    private _parsePrice(priceData: any): IPrice {
         return {
-            amount: priceData?.value || 0,
+            amount: priceData?.value.value || 0,
             currency: priceData?.currency || "UAH",
-            count: priceData?.count || 1,
         };
     }
 }
