@@ -35,9 +35,10 @@ export class SearchDialog extends Dialog {
             await ctx.reply(ctx.t("search-process-start"))
             try {
                 ctx.session.searchData.searchParams.query = dialogData.searchName;
-                ctx.session.searchData.data = await this.analyzeData(await this.searchManager.searchProduct(dialogData.searchName), dialogData.searchName);
+                ctx.session.searchData.data = await this.searchManager.searchProduct(dialogData.searchName);
 
                 if ( ctx.session.searchData.data[0].res.length !== 0){
+                    ctx.session.searchData.data =  await this.analyzeData( ctx.session.searchData.data,dialogData.searchName)
                     await ctx.reply(ctx.t("search-process-finish-success"))
                     await this.commandService.handle("start-pagination-menu",ctx)
                 }  else {
@@ -47,6 +48,7 @@ export class SearchDialog extends Dialog {
 
                 await this.end(ctx)
             } catch (e){
+                console.log(e);
                 await ctx.reply(ctx.t("search-process-finish-not-success"))
                 await this.end(ctx)
             }

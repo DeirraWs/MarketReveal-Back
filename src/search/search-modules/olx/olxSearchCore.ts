@@ -22,10 +22,8 @@ export default class olxSearchCore extends ISearchCore {
             const data = await this.getListOfProducts(urls[0])
             return data.map( (offer: IOfferDetail) => {return this.parseOfferDetails(offer)})
         } catch (e){
-
+            console.log(e);
         }
-
-
     }
 
     async getListOfProducts(url:string): Promise<IOfferDetail[]> {
@@ -65,6 +63,13 @@ export default class olxSearchCore extends ISearchCore {
         price:IPrice,
     } {
         let res: {tags: string[],price:IPrice} = {tags:[],price:{amount:0,currency:"UAH"}};
+
+        if (data.params.length === 0) {
+            return {
+                tags: [],
+                price: {amount:0,currency:"UAH"}
+            }
+        }
 
         if (data.params[0].key === "price"){
             res.price = this._parsePrice(data.params[0])

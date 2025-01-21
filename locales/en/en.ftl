@@ -34,7 +34,7 @@ search-process-question = Еnter the name of the product you want to find
 
 search-process-start = ⏳ The process has started, please wait...
 search-process-finish-success = ✅ Process finished successfully
-search-process-finish-not-success = ❌ Process finished with errors
+search-process-finish-not-success = ❌ Process finished with error
 search-process-empty = No result found
 
 //Menu Result Show

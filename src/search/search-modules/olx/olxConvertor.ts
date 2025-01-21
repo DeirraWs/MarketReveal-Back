@@ -11,10 +11,9 @@ export class OlxConvertor extends IConvertor {
 
   ConvertSearchParamsToUrl(searchParams: SearchParams): string {
     if (searchParams.params) {
-      return this._setOnlyQuery(searchParams.query)
+      return this._setOnlyQuery(searchParams.query);
     }
     else{
-      console.log(this._setOnlyQuery(searchParams.query));
       return this._setOnlyQuery(searchParams.query)
     }
 
