@@ -30,6 +30,7 @@ export default class MenuPagination extends MenuStructure {
                     if (this._pageMovement(ctx,false)) {
                         await ctx.editMessageText(this._getItemText(ctx.session.searchData.paginationMenu.page, ctx), {
                             reply_markup: this._menu,
+                            parse_mode: 'Markdown'
                         });
                     }
                 },
@@ -42,6 +43,7 @@ export default class MenuPagination extends MenuStructure {
                     if (this._pageMovement(ctx,true)) {
                         await ctx.editMessageText(this._getItemText(ctx.session.searchData.paginationMenu.page, ctx), {
                             reply_markup: this._menu,
+                            parse_mode: 'Markdown'
                         });
                     }
                 },
@@ -54,10 +56,12 @@ export default class MenuPagination extends MenuStructure {
                     if (this._toggleButton(ctx,"extended")) {
                         await ctx.editMessageText(`Extended info of ${this._getItemText(ctx.session.searchData.paginationMenu.page, ctx)}`, {
                             reply_markup: this._menu,
+                            parse_mode: 'Markdown'
                         });
                     } else {
                         await ctx.editMessageText(`${this._getItemText(ctx.session.searchData.paginationMenu.page,ctx)}`, {
                             reply_markup: this._menu,
+                            parse_mode: 'Markdown'
                         });
                     }
                 },

@@ -27,12 +27,42 @@ main_menu_help_btn = Help
 main_menu_tracking_btn = Tracked
 main_menu_view_favourite_products_btn = Favourite products
 
+//Search filters
+
+search-filters-message-header = Your filters
+
+minPrice = Min price
+    .inputDesc = Write the minimum price of the product you want to find in uah...
+    .values = {$value} uah
+
+maxPrice = Max price
+    .inputDesc = Write the maximum price of the product you want to find in uah...
+    .values = {$value} uah
+
+state = State
+    .inputDesc = Choose the state of the product you want to find...
+    .values = { $value ->
+        [new] New
+        [used] Used
+        *[other] All
+    }
+
+subCategory = 🗂️Subcategory
+    .inputDesc = Choose the subcategory of the product you want to find...
+    .values = { $value ->
+        [mobilnye-telefony-smartfony] Smartphones
+        [zapchasti-dlya-telefonov] Phone parts
+        [aksessuary-dlya-telefonov] Phone accessories
+        *[other] All
+    }
+
 
 //Search dialog
 
 search-process-question = Еnter the name of the product you want to find
 
 search-process-start = ⏳ The process has started, please wait...
+search-process-start-button = 🔍Search
 search-process-finish-success = ✅ Process finished successfully
 search-process-finish-not-success = ❌ Process finished with errors
 search-process-empty = No result found
