@@ -31,13 +31,10 @@ export class SearchManageService {
                   filters:{minPrice:0,maxPrice:Infinity}
               }
             )
-            console.log(JSON.stringify(searchResult));
             finalRes.push(searchResult)
-            return finalRes
         }
 
-
-        // return finalRes;
+        return finalRes;
     }
 
     createTrackingSession(searchParams:SearchParams,trackId:string): Tracks {

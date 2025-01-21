@@ -96,7 +96,7 @@ export default class MenuPagination extends MenuStructure {
     }
 
     getStartInfo(context: MyContext): string {
-        return ` 1/${context.session.searchData.dataTransformedToMenu.length}  \n` + context.session.searchData.dataTransformedToMenu[0];
+        return ` 1/${context.session.searchData.dataTransformedToMenu.length}  \n` + this._checkMessageToLongReturnShorter(context.session.searchData.dataTransformedToMenu[0]);
     }
 
     private _getItemText(index: number, context: MyContext): string {
@@ -105,7 +105,7 @@ export default class MenuPagination extends MenuStructure {
 
     private _checkMessageToLongReturnShorter(text: string): string {
         if (text.length > MAX_MESSAGE_LENGTH) {
-            return  text.slice(0, MAX_MESSAGE_LENGTH - 3) + "...";
+            return  text.slice(0, MAX_MESSAGE_LENGTH - 5) + "...";
         }
         return text;
     }

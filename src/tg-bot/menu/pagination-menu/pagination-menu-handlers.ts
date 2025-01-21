@@ -45,6 +45,8 @@ export class StartPaginationMenu extends Handler {
   }
 
   private _formatResultToString(result: ResultStructure, context: MyContext): string {
+    if (!result)
+      return 'ERROR: Bed offers ';
     return `
 📌 ${result.title}
 💰 ${context.t('price_text')}: ${result.price.amount} ${result.price.currency}
