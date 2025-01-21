@@ -6,6 +6,7 @@ import {AccountMenu, ChangeLanguageMenu} from './accountMenu';
 import {TrackingMenu} from "./trackingMenu";
 import { PaginationMenuModule } from './pagination-menu/pagination-menu.module';
 import { MainMenuModule } from './main-menu/main-menu-module';
+import {ChooseFilterStateMenu, ChooseFilterSubCatMenu, SearchFiltersMenu} from "./searchFiltersMenu";
 
 @Module({
     imports: [
@@ -18,6 +19,9 @@ import { MainMenuModule } from './main-menu/main-menu-module';
         ChangeLanguageMenu,
         MenuService,
         TrackingMenu,
+        SearchFiltersMenu,
+        ChooseFilterStateMenu,
+        ChooseFilterSubCatMenu
     ],
     exports: [MenuService],
 })
