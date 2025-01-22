@@ -16,6 +16,8 @@ month-10 = October
 month-11 = November
 month-12 = December
 
+//Help
+help = If you have any questions, contact thesis support - anton.hunderych.kb.2023@lpnu.ua
 
 //Main menu
 
@@ -98,6 +100,7 @@ selected_language = You select English!
 
 //Tracking Menu
 
+tracking-menu-text = Tracking menu
 tracking-menu-first-search = Please perform a search to start tracking the product.
 tracking-menu-choose = Select a product to view the results.
 tracking-menu-choose-search = Search for a product

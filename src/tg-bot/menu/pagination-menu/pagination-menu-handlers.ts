@@ -92,9 +92,7 @@ export class StopPaginationMenu extends Handler {
 
     if (context.session.searchData.paginationMenu.currentTrackedUUID) {
       context.session.searchData.paginationMenu.currentTrackedUUID = null;
-      await context.reply("da",{
-        reply_markup: this.menuService.getMenuClass("tracking-menu").getMenu()
-      })
+      await this.commandService.handle("start-tracking-menu", context);
       return;
     }
 

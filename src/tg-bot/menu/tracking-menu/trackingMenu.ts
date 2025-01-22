@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CommandService } from '../command/command.service';
+import { CommandService } from '../../command/command.service';
 import { Menu, MenuRange } from '@grammyjs/menu';
-import { MyContext } from '../tg-bot.service';
-import { MenuService, MenuStructure } from './menu.service';
+import { MyContext } from '../../tg-bot.service';
+import { MenuService, MenuStructure } from '../menu.service';
 
 @Injectable()
 export class TrackingMenu extends MenuStructure {

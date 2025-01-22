@@ -6,7 +6,7 @@ import {MenuService, MenuStructure} from '../menu.service';
 
 class HelpHandler extends Handler {
     async handlerLogic(context: MyContext): Promise<any> {
-        await context.reply("Do you want help? Ask God")
+        await context.reply(context.t("help"))
     }
 }
 
@@ -28,9 +28,7 @@ export class MainMenu extends MenuStructure {
                 await this.commandManagerService.handle("start-search", ctx);
             })
             .text({text: ctx => ctx.t("main_menu_tracking_btn")}, async (ctx) => {
-                await ctx.reply("Da",{
-                    reply_markup: this.menuService.getMenuClass("tracking-menu").getMenu()
-                })
+                await this.commandManagerService.handle("start-tracking-menu", ctx);
             })
             .row()
             .text({text: ctx => ctx.t("main_menu_account1_btn")}, async (ctx) => {
@@ -40,9 +38,6 @@ export class MainMenu extends MenuStructure {
                 await this.commandManagerService.handle("help", ctx);
             })
             .row()
-            .text({text: ctx => ctx.t("main_menu_account_btn")}, async (ctx) => {
-                await this.commandManagerService.handle("search-synonyms", ctx);
-            })
             .text(
                 { text: ctx => ctx.t('main_menu_view_favourite_products_btn') }, async (ctx) => {
                   await this.commandManagerService.handle('view-favourite-products', ctx);
