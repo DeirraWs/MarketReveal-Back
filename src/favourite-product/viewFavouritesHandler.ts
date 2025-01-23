@@ -16,13 +16,10 @@ export class ViewFavouritesHandler extends Handler {
 
     async handlerLogic(context: MyContext): Promise<void> {
         const telegramId = context.from?.id;
-
-        const product = await this.favouriteProductService.getFavouriteProducts(telegramId);
-        if(!product) {
-            context.reply("You havent any favourite products")
-        }
         
-        context.session.searchData.data = product
+        const product = await this.favouriteProductService.getFavouriteProducts(telegramId, context);
+        
+        context.session.searchData.data = product;
 
         await this.commandService.handle('start-pagination-menu', context);
     }

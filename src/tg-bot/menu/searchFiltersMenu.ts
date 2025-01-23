@@ -97,15 +97,15 @@ export class ChooseFilterSubCatMenu extends MenuStructure {
             })
             .row()
             .text((ctx)=>ctx.t("subCategory.values", {value: "mobilnye-telefony-smartfony"}), async (ctx) => {
-                await this.commandService.handle('set-filter-sub-cat', ctx, 'mobilnye-telefony-smartfony');
+                await this.commandService.handle('set-filter-sub-cat', ctx, '85');
             })
             .row()
             .text((ctx)=>ctx.t("subCategory.values", {value: "zapchasti-dlya-telefonov"}), async (ctx) => {
-                await this.commandService.handle('set-filter-sub-cat', ctx, 'zapchasti-dlya-telefonov');
+                await this.commandService.handle('set-filter-sub-cat', ctx, '1482');
             })
             .row()
             .text((ctx)=>ctx.t("subCategory.values", {value: "aksessuary-dlya-telefonov"}), async (ctx) => {
-                await this.commandService.handle('set-filter-sub-cat', ctx, 'aksessuary-dlya-telefonov');
+                await this.commandService.handle('set-filter-sub-cat', ctx, '442');
             })
     }
 }

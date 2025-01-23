@@ -48,9 +48,8 @@ export class SearchReadyHandler extends Handler {
         await ctx.reply(ctx.t("search-process-start"))
 
         await this.dialogService.startDialog(ctx, "search")
-        ctx.session.searchData.searchParams.filters = {}
 
-        ctx.session.searchData.data = await this.searchManager.searchProduct(ctx.session.searchData.searchParams.query);
+        ctx.session.searchData.data = await this.searchManager.searchProduct(ctx.session.searchData.searchParams.query, ctx.session.searchData.searchParams.filters);
 
         if ( ctx.session.searchData.data[0].res.length !== 0){
             ctx.session.searchData.data =  await this.analyzeData( ctx.session.searchData.data,ctx.session.searchData.searchParams.query)

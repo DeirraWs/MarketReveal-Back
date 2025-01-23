@@ -34,7 +34,7 @@ import { FavouriteProductModule } from './favourite-product/favourite-product.mo
           models:[User,Role,UserRoles],
           autoLoadModels: true,
           synchronize: true,
-          sync: { force: true },
+          sync: { force: false },
       })
     , UsersModule, RolesModule, AuthModule, TgBotModule, SearchManageModule, DictionaryModule, OpenAiModule, OffersTrackingModule, RedisModule, FavouriteProductModule],
   controllers: [AppController],

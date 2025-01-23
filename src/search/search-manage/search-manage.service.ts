@@ -21,14 +21,14 @@ export class SearchManageService {
         this.olxSearchModule
     ]
 
-    async searchProduct (name: string): Promise<SearchResult[]> {
+    async searchProduct (name: string, filters): Promise<SearchResult[]> {
         const finalRes:SearchResult[] = []
         for (const searchModule of this._searchModules) {
             const searchResult = await searchModule.search(
               {
                   query:name,
                   params:{},
-                  filters:{minPrice:0,maxPrice:Infinity}
+                  filters: filters
               }
             )
             finalRes.push(searchResult)

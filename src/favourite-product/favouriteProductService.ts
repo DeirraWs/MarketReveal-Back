@@ -56,7 +56,7 @@ export class FavouriteProductService {
         }
     }
 
-    async getFavouriteProducts(telegramId: number): Promise<any[]> {
+    async getFavouriteProducts(telegramId: number, context:MyContext): Promise<any[]> {
         try {
             const favouriteProducts = await FavouriteProduct.findAll({
                 where: { telegramId },
@@ -67,9 +67,14 @@ export class FavouriteProductService {
                     "timePosted",
                     "url",
                     "tags",
-                    "description"
+                    "description",
                 ]
             });
+
+            if (!favouriteProducts || !Array.isArray(favouriteProducts) || favouriteProducts.length === 0) {
+                context.reply("You havent any favourite products")
+                return [];
+            }
 
             return favouriteProducts.map((product) => ({
                 resultCode: 1,
@@ -85,6 +90,7 @@ export class FavouriteProductService {
                         url: product.url,
                         tags: product.tags ? product.tags.split(", ") : [],
                         description: product.description || "No description available.",
+                        favourite: true
                     },
                 ],
             }));
