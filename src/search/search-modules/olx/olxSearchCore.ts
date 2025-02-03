@@ -1,156 +1,116 @@
 import { ISearchCore } from "../ISearchCore";
 import axios from 'axios';
-import * as cheerio from "cheerio";
+import { IOfferDetail, IParam } from './types/OfferData';
 import { Injectable } from "@nestjs/common";
+
 
 export interface IPrice {
     amount: number;
     currency: string;
-    count: number;
 }
 
 @Injectable()
 export default class olxSearchCore extends ISearchCore {
 
     async getListOfProductsUrls(url:string) : Promise<string[]> {
-        return this.getAllUrlToDetailedInformationFromPage(await this.getHtmlPage(url))
+        const data = await this.getListOfProducts(url)
+        return data.map( (offer: IOfferDetail) => {return offer.url} )
     }
 
     async getDetailInformationByProduct(urls:string[]): Promise<Object[]> {
-        return await this.offerParser(urls)
+        try {
+            const data = await this.getListOfProducts(urls[0])
+            return data.map( (offer: IOfferDetail) => {return this.parseOfferDetails(offer)})
+        } catch (e){
+            console.log(e);
+        }
     }
 
-    async getHtmlPage(url: string): Promise<cheerio.Root> {
+    async getListOfProducts(url:string): Promise<IOfferDetail[]> {
         try {
             const response = await axios.get(url);
-            return cheerio.load(response.data);
-        } catch (e) {
-            console.log("Error fetching the URL:", e);
+            return response.data?.data || [];
+        } catch (error) {
+            console.error("Error fetching products list:", error);
+            return [];
         }
     }
 
-    getAllUrlToDetailedInformationFromPage(page: cheerio.Root) {
-        let prevHref = "";
-        const links: string[] = []
+     /**
+     * Parses the API response to extract offer details.
+     * @param {any} data - API response for a single offer.
+     * @returns {Object} Parsed offer details.
+     */
+    private parseOfferDetails(data: IOfferDetail): Object {
+        if (!data) return null;
 
-        page('a.css-qo0cxu').each((i: number, element: cheerio.Element) => {
-            const href = page(element).attr('href');
+        let parsedParams = this._parseParams(data);
 
-            if (href && prevHref !== href) {
-                links.push("https://www.olx.ua" + href.slice(2, href.length));
-                prevHref = href;
-            }
-        });
-
-        return links
+        return {
+            id: data.id,
+            title: data.title,
+            price: parsedParams.price,
+            description: this._getDescriptionCorrect(data.description),
+            images: data.photos.map((photo: any) => photo.link),
+            timePosted: data.last_refresh_time,
+            tags: parsedParams.tags,
+            url: data.url,
+        };
     }
 
+    private _parseParams(data: IOfferDetail): {
+        tags: string[]
+        price:IPrice,
+    } {
+        let res: {tags: string[],price:IPrice} = {tags:[],price:{amount:0,currency:"UAH"}};
 
-
-    async offerParser(links: string[]) {
-
-        const offers = await Promise.all(
-          links.map(async (urlToOffer) => {
-              const htmlPage: cheerio.Root | undefined = await this.getHtmlPage(urlToOffer);
-              return this._parseOfferHtmlPage(htmlPage, urlToOffer);
-          })
-        );
-
-        return offers.filter((offer) => offer !== undefined);
-    }
-
-    private _parseOfferHtmlPage(htmlPage: cheerio.Root | undefined, url: string) {
-        if (htmlPage) {
+        if (data.params.length === 0) {
             return {
-                url,
-                title: this._getTitle(htmlPage),
-                price: this._getPrice(htmlPage),
-                timePosted: this._getTime(htmlPage),
-                tags: this._getOfferTags(htmlPage),
-                description: this._getDescription(htmlPage),
-                images: this._getImages(htmlPage),
-            };
+                tags: [],
+                price: {amount:0,currency:"UAH"}
+            }
+        }
+
+        if (data.params[0].key === "price"){
+            res.price = this._parsePrice(data.params[0])
+            res.tags = this._getTags(data.params,1,data.params.length-1)
         } else {
-            console.log("HTML page not found");
-        }
-    }
-
-    private _getImages(htmlPage: cheerio.Root): string[] {
-        const images: string[] = [];
-        htmlPage(".css-1bmvjcs").each((i, e) => {
-            const image: string | undefined = htmlPage(e).attr('src');
-            if (image) {
-                images.push(image);
-            }
-        });
-        return images;
-    }
-
-    private _getTime(htmlPage: cheerio.Root) {
-        return htmlPage('.css-19yf5ek').text();
-    }
-
-    private _getTitle(htmlPage: cheerio.Root) {
-        return htmlPage('.css-1kc83jo').text();
-    }
-
-    private _getPrice(htmlPage: cheerio.Root): IPrice {
-        return this._priceStringToNumber(htmlPage('.css-90xrc0').text());
-    }
-
-    private _priceStringToNumber(priceString: string): IPrice {
-        const numberList = {
-            "0": "0",
-            "1": "1",
-            "2": "2",
-            "3": "3",
-            "4": "4",
-            "5": "5",
-            "6": "6",
-            "7": "7",
-            "8": "8",
-            "9": "9",
-            " ": ""
-        };
-
-        let outputPrice: IPrice = {
-            currency: "",
-            amount: 0,
-            count: 0
-        };
-
-        let tmpString: string = "";
-        let i: number = 0;
-        for (i; i < priceString.length; i++) {
-            if (priceString[i] in numberList) {
-                tmpString += numberList[priceString[i]];
-            } else {
-                let indexStart: number = i;
-                for (i; i < priceString.length; i++) {
-                    if (priceString[i] === "/") {
-                        outputPrice.currency = priceString.substring(indexStart, i);
-                        outputPrice.count = parseInt(priceString.substring(i, priceString.length).replace(/\s+/g, '').replace(/[^0-9]/g, ''), 10);
-                    }
-                }
-                if (outputPrice.currency === "")
-                    outputPrice.currency = priceString.substring(indexStart, i);
-            }
+            res.price = this._parsePrice(data.params[data.params.length - 1])
+            res.tags = this._getTags(data.params,0,data.params.length-2)
         }
 
-        outputPrice.amount = parseInt(tmpString, 10);
-        return outputPrice;
+        return res;
     }
 
-    private _getOfferTags(htmlPage: cheerio.Root): string[] {
+    private _getTags(data: IParam[],startIndex: number, lastIndex: number ): string[] {
         const tags: string[] = [];
-        htmlPage('.css-rn93um .css-1r0si1e .css-b5m1rv').each((index: number, element: cheerio.Element) => {
-            tags.push(htmlPage(element).text());
-        });
+        for (let i = startIndex; i < lastIndex; i++) {
+            tags.push(`${data[i].name}:${data[i].value.label}`)
+        }
         return tags;
     }
 
-    private _getDescription(htmlPage: cheerio.Root) {
-        return htmlPage(".css-1o924a9").text();
+    private _getDescriptionCorrect( description: string ): string {
+        let cleaned = description.replace(/<[^>]*>/g, '');
+
+        cleaned = cleaned.replace(/\\u[0-9A-Fa-f]{4}/g, '');
+        cleaned = cleaned.replace(/\\n/g, '');
+        cleaned = cleaned.replace(/-{3,}/g, '');
+        cleaned = cleaned.replace(/\s{2,}/g, ' ').trim();
+
+        return cleaned;
     }
 
+    /**
+     * Parses the price object from the API response.
+     * @param {any} priceData - API price data.
+     * @returns {IPrice} Parsed price object.
+     */
+
+    private _parsePrice(priceData: any): IPrice {
+        return {
+            amount: priceData?.value.value || 0,
+            currency: priceData?.currency || "UAH",
+        };
+    }
 }

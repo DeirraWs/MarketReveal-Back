@@ -1,8 +1,8 @@
-import {Inject, Injectable} from '@nestjs/common';
-import {CommandService} from '../command/command.service';
-import {Menu, MenuRange} from '@grammyjs/menu';
-import {MyContext} from '../tg-bot.service';
-import {MenuService, MenuStructure} from './menu.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { CommandService } from '../../command/command.service';
+import { Menu, MenuRange } from '@grammyjs/menu';
+import { MyContext } from '../../tg-bot.service';
+import { MenuService, MenuStructure } from '../menu.service';
 
 @Injectable()
 export class TrackingMenu extends MenuStructure {
@@ -43,9 +43,25 @@ export class TrackingMenu extends MenuStructure {
                             },
                             async (ctx: MyContext) => {
                                 if (data.resultCount !== 0) {
+                                  ctx.session.searchData.paginationMenu.currentTrackedUUID = data.uuid;
                                     await this.commandManagerService.handle("get-t", ctx, data.uuid)
                                 }
                             }
+                        )
+                          .row()
+                          .text({
+                              text: ctx => '✏️',
+                            },
+                            async (ctx) => {
+                              //await this.commandManagerService.handle("", ctx)
+                            },
+                          )
+                          .text((ctx: MyContext) => '🗑️',
+                            async (ctx) => {
+                              await this.commandManagerService.handle('stop-t', ctx, data.uuid);
+                              ctx.menu.update();
+                            },
+
                         ).row()
                     }
                 }
@@ -56,6 +72,14 @@ export class TrackingMenu extends MenuStructure {
                           ctx.menu.update()
                         }
                     )
+                    .row()
+                   .text((ctx: MyContext) => ctx.t('back-button'),
+                      async (ctx) => {
+                        await ctx.reply(ctx.t('main_menu_text'),{
+                          reply_markup: this.menuService.getMenuClass("main-menu").getMenu()
+                        })
+                      },
+                   )
                 return range
             })
 

@@ -1,5 +1,5 @@
 import { ITrack } from './ITrack';
-import { ResultStructure } from '../types/types';
+import { ResultStructure, SearchResult } from '../types/types';
 import { ISearchCore } from './ISearchCore';
 import { IConvertor } from './IConvertor';
 import { ICacheTracking } from './ICache';
@@ -20,13 +20,12 @@ export class Track extends ITrack {
   }
 
   async getData(): Promise<ResultStructure[]> {
-    return this.convertor.ConvertSearchResultsToStandard(
-      await this.searchCore.getDetailInformationByProduct(
-        await this.cache.getUrlsNotExistedInCache(
-          await this.searchCore.getListOfProductsUrls(this.url)
-        )
-      )
-    )
+
+    const resultOFSearch : ResultStructure[] = await this.searchCore.getDetailInformationByProduct([this.url])
+
+    const newURL : string[] = await this.cache.getUrlsNotExistedInCache(resultOFSearch.map((value)=>{return value.url}))
+
+    return resultOFSearch.filter((value) => newURL.includes(value.url));
   }
 
 }

@@ -30,6 +30,7 @@ export default class MenuPagination extends MenuStructure {
                     if (this._pageMovement(ctx,false)) {
                         await ctx.editMessageText(this._getItemText(ctx.session.searchData.paginationMenu.page, ctx), {
                             reply_markup: this._menu,
+                            parse_mode: 'Markdown'
                         });
                     }
                 },
@@ -42,6 +43,7 @@ export default class MenuPagination extends MenuStructure {
                     if (this._pageMovement(ctx,true)) {
                         await ctx.editMessageText(this._getItemText(ctx.session.searchData.paginationMenu.page, ctx), {
                             reply_markup: this._menu,
+                            parse_mode: 'Markdown'
                         });
                     }
                 },
@@ -54,21 +56,25 @@ export default class MenuPagination extends MenuStructure {
                     if (this._toggleButton(ctx,"extended")) {
                         await ctx.editMessageText(`Extended info of ${this._getItemText(ctx.session.searchData.paginationMenu.page, ctx)}`, {
                             reply_markup: this._menu,
+                            parse_mode: 'Markdown'
                         });
                     } else {
                         await ctx.editMessageText(`${this._getItemText(ctx.session.searchData.paginationMenu.page,ctx)}`, {
                             reply_markup: this._menu,
+                            parse_mode: 'Markdown'
                         });
                     }
                 },
             ).row()
             .text({
-                text: ctx => ctx.session.searchData.paginationMenu.tracked ? ctx.t("menu_result_show_tracked_btn") : ctx.t("menu_result_show_track_btn"),
+                text: ctx => ctx.session.searchData.paginationMenu.currentTrackedUUID ? ctx.t("menu_result_show_tracked_btn") : ctx.t("menu_result_show_track_btn"),
             },
                 async (ctx) => {
-                    if (!ctx.session.searchData.paginationMenu.tracked) {
-                        ctx.session.searchData.paginationMenu.tracked = !ctx.session.searchData.paginationMenu.tracked;
-                        await this.commandService.handle('start-t', ctx, ctx.session.searchData.searchParams);
+                    if (ctx.session.searchData.paginationMenu.currentTrackedUUID === null) {
+                        ctx.session.searchData.paginationMenu.currentTrackedUUID = await this.commandService.handle('start-t', ctx, ctx.session.searchData.searchParams);
+                    } else {
+                        await this.commandService.handle('stop-t', ctx, ctx.session.searchData.searchParams);
+                        ctx.session.searchData.paginationMenu.currentTrackedUUID = null
                     }
                     ctx.menu.update()
                 })
@@ -77,9 +83,9 @@ export default class MenuPagination extends MenuStructure {
                 text: ctx => ctx.session.searchData.paginationMenu.additionalData[ctx.session.searchData.paginationMenu.page].favorite ? "❤️" : "🤍",
             }, async (ctx) => {
                 if (this._toggleButton(ctx,"favorite")){
-                    //await this.commandService.handle('', ctx);
+                    await this.commandService.handle('add-to-favourite', ctx);
                 } else {
-                    //await this.commandService.handle('', ctx);
+                    await this.commandService.handle('delete-from-favourites', ctx);
                 }
                 ctx.menu.update();
             })
@@ -90,7 +96,7 @@ export default class MenuPagination extends MenuStructure {
     }
 
     getStartInfo(context: MyContext): string {
-        return ` 1/${context.session.searchData.dataTransformedToMenu.length}  \n` + context.session.searchData.dataTransformedToMenu[0];
+        return ` 1/${context.session.searchData.dataTransformedToMenu.length}  \n` + this._checkMessageToLongReturnShorter(context.session.searchData.dataTransformedToMenu[0]);
     }
 
     private _getItemText(index: number, context: MyContext): string {
@@ -99,7 +105,7 @@ export default class MenuPagination extends MenuStructure {
 
     private _checkMessageToLongReturnShorter(text: string): string {
         if (text.length > MAX_MESSAGE_LENGTH) {
-            return  text.slice(0, MAX_MESSAGE_LENGTH - 3) + "...";
+            return  text.slice(0, MAX_MESSAGE_LENGTH - 5) + "...";
         }
         return text;
     }

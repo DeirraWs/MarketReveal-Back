@@ -14,6 +14,9 @@ import { CommandModule } from '../tg-bot/command/command.module';
   imports: [
     DialogModule,
     CommandModule,
+  ],
+  exports: [
+    OpenAIService,
   ]
 })
 export class OpenAiModule {}

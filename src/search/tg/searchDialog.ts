@@ -4,6 +4,8 @@ import {Inject, Injectable} from "@nestjs/common";
 import {MenuService} from "../../tg-bot/menu/menu.service";
 import {SearchManageService} from "../search-manage/search-manage.service";
 import { CommandService } from '../../tg-bot/command/command.service';
+import { OpenAIService } from '../../open-ai/open-ai.service';
+import { ResultStructure, SearchResult } from '../types/types';
 
 @Injectable()
 export class SearchDialog extends Dialog {
@@ -12,6 +14,7 @@ export class SearchDialog extends Dialog {
     constructor(
         @Inject() private searchManager: SearchManageService ,
         @Inject() private commandService: CommandService ,
+        @Inject() private openai: OpenAIService,
         private readonly dialogService: DialogService,
         readonly menuService: MenuService,
     ) {
@@ -32,11 +35,10 @@ export class SearchDialog extends Dialog {
             await ctx.reply(ctx.t("search-process-start"))
             try {
                 ctx.session.searchData.searchParams.query = dialogData.searchName;
-                ctx.session.searchData.data = await this.searchManager.searchProduct(dialogData.searchName);
-                await ctx.reply(ctx.t("search-process-finish-success"))
-                await this.commandService.handle("start-pagination-menu",ctx)
+                await this.commandService.handle('generate-filters-message', ctx);
                 await this.end(ctx)
             } catch (e){
+                console.log(e);
                 await ctx.reply(ctx.t("search-process-finish-not-success"))
                 await this.end(ctx)
             }

@@ -1,5 +1,24 @@
 greeting = Welcome to MarketReveal!
 
+back-button = Back
+
+//Data
+month-01 = January
+month-02 = February
+month-03 = March
+month-04 = April
+month-05 = May
+month-06 = June
+month-07 = July
+month-08 = August
+month-09 = September
+month-10 = October
+month-11 = November
+month-12 = December
+
+//Help
+help = If you have any questions, contact thesis support - anton.hunderych.kb.2023@lpnu.ua
+
 //Main menu
 
 main_menu_text = Main menu
@@ -8,6 +27,36 @@ main_menu_account1_btn = Account
 main_menu_search_btn = Search
 main_menu_help_btn = Help
 main_menu_tracking_btn = Tracked
+main_menu_view_favourite_products_btn = Favourite products
+
+//Search filters
+
+search-filters-message-header = Your filters
+
+minPrice = Min price
+    .inputDesc = Write the minimum price of the product you want to find in uah...
+    .values = {$value} uah
+
+maxPrice = Max price
+    .inputDesc = Write the maximum price of the product you want to find in uah...
+    .values = {$value} uah
+
+state = State
+    .inputDesc = Choose the state of the product you want to find...
+    .values = { $value ->
+        [new] New
+        [used] Used
+        *[other] All
+    }
+
+subCategory = 🗂️Subcategory
+    .inputDesc = Choose the subcategory of the product you want to find...
+    .values = { $value ->
+        [mobilnye-telefony-smartfony] Smartphones
+        [zapchasti-dlya-telefonov] Phone parts
+        [aksessuary-dlya-telefonov] Phone accessories
+        *[other] All
+    }
 
 
 //Search dialog
@@ -15,8 +64,10 @@ main_menu_tracking_btn = Tracked
 search-process-question = Еnter the name of the product you want to find
 
 search-process-start = ⏳ The process has started, please wait...
+search-process-start-button = 🔍Search
 search-process-finish-success = ✅ Process finished successfully
-search-process-finish-not-success = ❌ Process finished with errors
+search-process-finish-not-success = ❌ Process finished with error
+search-process-empty = No result found
 
 //Menu Result Show
 
@@ -49,6 +100,7 @@ selected_language = You select English!
 
 //Tracking Menu
 
+tracking-menu-text = Tracking menu
 tracking-menu-first-search = Please perform a search to start tracking the product.
 tracking-menu-choose = Select a product to view the results.
 tracking-menu-choose-search = Search for a product
