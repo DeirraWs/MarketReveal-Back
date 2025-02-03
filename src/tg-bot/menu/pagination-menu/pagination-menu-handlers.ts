@@ -87,7 +87,6 @@ export class StopPaginationMenu extends Handler {
       return;
     }
 
-
     context.session.searchData.dataTransformedToMenu = [];
     await context.reply(context.t('main_menu_text'),{
       reply_markup: this.menuService.getMenuClass("main-menu").getMenu()
