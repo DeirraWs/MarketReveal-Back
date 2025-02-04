@@ -38,11 +38,6 @@ export class MinPriceDialog extends Dialog {
                     }
                 }
                 await this.commandService.handle('generate-filters-message', ctx);
-
-                // ctx.session.searchData.searchParams.filters["minPrice"] = dialogData.searchName;
-                // ctx.session.searchData.data = await this.searchManager.searchProduct(dialogData.searchName);
-                // await ctx.reply(ctx.t("search-process-finish-success"))
-                // await this.commandService.handle("start-pagination-menu",ctx)
                 await this.end(ctx)
             } catch (e){
                 await ctx.reply(ctx.t("search-process-finish-not-success"))

@@ -15,6 +15,8 @@ export class ViewFavouritesHandler extends Handler {
     }
 
     async handlerLogic(context: MyContext): Promise<void> {
+        context.session.utilityFlags.favouriteChecking = true
+
         const telegramId = context.from?.id;
         
         const product = await this.favouriteProductService.getFavouriteProducts(telegramId, context);

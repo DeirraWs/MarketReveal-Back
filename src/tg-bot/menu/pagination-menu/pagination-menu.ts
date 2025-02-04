@@ -28,10 +28,7 @@ export default class MenuPagination extends MenuStructure {
                 },
                 async (ctx) => {
                     if (this._pageMovement(ctx,false)) {
-                        await ctx.editMessageText(this._getItemText(ctx.session.searchData.paginationMenu.page, ctx), {
-                            reply_markup: this._menu,
-                            parse_mode: 'Markdown'
-                        });
+                        await this._resendMenu(ctx)
                     }
                 },
             )
@@ -41,10 +38,7 @@ export default class MenuPagination extends MenuStructure {
                 },
                 async (ctx : MyContext) => {
                     if (this._pageMovement(ctx,true)) {
-                        await ctx.editMessageText(this._getItemText(ctx.session.searchData.paginationMenu.page, ctx), {
-                            reply_markup: this._menu,
-                            parse_mode: 'Markdown'
-                        });
+                        await this._resendMenu(ctx)
                     }
                 },
             ).row()
@@ -59,10 +53,7 @@ export default class MenuPagination extends MenuStructure {
                             parse_mode: 'Markdown'
                         });
                     } else {
-                        await ctx.editMessageText(`${this._getItemText(ctx.session.searchData.paginationMenu.page,ctx)}`, {
-                            reply_markup: this._menu,
-                            parse_mode: 'Markdown'
-                        });
+                       await this._resendMenu(ctx)
                     }
                 },
             ).row()
@@ -97,6 +88,13 @@ export default class MenuPagination extends MenuStructure {
 
     getStartInfo(context: MyContext): string {
         return ` 1/${context.session.searchData.dataTransformedToMenu.length}  \n` + this._checkMessageToLongReturnShorter(context.session.searchData.dataTransformedToMenu[0]);
+    }
+
+    private async _resendMenu(context: MyContext) {
+        await context.editMessageText(`${this._getItemText(context.session.searchData.paginationMenu.page,context)}`, {
+            reply_markup: this._menu,
+            parse_mode: 'MarkdownV2'
+        });
     }
 
     private _getItemText(index: number, context: MyContext): string {

@@ -42,6 +42,9 @@ export interface MySession {
     userInfo?: Record<string, any>;
     searchData?: SessionSearchData;
     TrackingMenu?: TrackingMenuElementData[];
+    utilityFlags?: {
+        favouriteChecking: boolean;
+    }
 }
 
 export type MyContext = Context & SessionFlavor<MySession> & I18nFlavor;
@@ -133,6 +136,9 @@ export class TgBotService implements OnModuleInit {
                         }
                     },
                     TrackingMenu:[],
+                    utilityFlags: {
+                        favouriteChecking: false,
+                    }
                 };
             }
         }));

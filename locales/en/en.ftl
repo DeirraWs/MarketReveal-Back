@@ -52,9 +52,9 @@ state = State
 subCategory = 🗂️Subcategory
     .inputDesc = Choose the subcategory of the product you want to find...
     .values = { $value ->
-        [mobilnye-telefony-smartfony] Smartphones
-        [zapchasti-dlya-telefonov] Phone parts
-        [aksessuary-dlya-telefonov] Phone accessories
+        [smartphones] Smartphones
+        [parts-for-smartphones] Phone parts
+        [accessories-for-smartphones] Phone accessories
         *[other] All
     }
 

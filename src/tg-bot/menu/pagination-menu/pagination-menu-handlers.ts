@@ -5,7 +5,6 @@ import { MenuService } from '../menu.service';
 import { MyContext } from '../../tg-bot.service';
 import { ResultStructure, SearchResult } from '../../../search/types/types';
 
-
 @Injectable()
 export class StartPaginationMenu extends Handler {
 
@@ -27,7 +26,8 @@ export class StartPaginationMenu extends Handler {
       const menu = this.menuService.getMenuClass("menu-pagination");
 
       await context.reply(this.menuPagination.getStartInfo(context), {
-        reply_markup: menu.getMenu()
+        reply_markup: menu.getMenu(),
+        parse_mode: "MarkdownV2"
       })
   }
 
@@ -37,7 +37,7 @@ export class StartPaginationMenu extends Handler {
     for (const searchResult of res) {
       if (searchResult.resultCode === 1){
         for (const result of searchResult.res) {
-          convertedResult.push(this._formatResultToString(result, context));
+          convertedResult.push(this._escapeMarkdown(this._formatResultToString(result, context)));
         }
       }
     }
@@ -58,19 +58,23 @@ ${result.description ? result.description : context.t('no_description_text')}
 `.trim();
   }
 
+   private _escapeMarkdown(text:string):string {
+    return text.replace(/([_*[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
+  }
+
   private _convertData(time: string, ctx: MyContext):string {
-    const [year, month,day] = time.substring(0,9).split('-');
+    const [year, month,day] = time.substring(0,10).split('-');
     const monthName = ctx.t(`month-${month}`);
-    return `${day} ${monthName} ${year}`;
+    return `${day[0] === '0' ? day[1] : day} ${monthName} ${year}`;
   }
 
   private _initPaginationMenuVisualData(ctx: MyContext): void {
-    ctx.session.searchData.paginationMenu.additionalData = ctx.session.searchData.dataTransformedToMenu.map(()=>{
-      return {
-        extended:false,
-        favorite:false
-      }
-    })
+    const isFavorite = ctx.session.utilityFlags.favouriteChecking;
+    ctx.session.searchData.paginationMenu.additionalData =
+      ctx.session.searchData.dataTransformedToMenu.map(() => ({
+        extended: false,
+        favorite: isFavorite
+      }));
   }
 }
 
@@ -89,6 +93,7 @@ export class StopPaginationMenu extends Handler {
 
     context.session.searchData.paginationMenu.page = 0;
     context.session.searchData.paginationMenu.additionalData = [];
+    this.checkFlags(context);
 
     if (context.session.searchData.paginationMenu.currentTrackedUUID) {
       context.session.searchData.paginationMenu.currentTrackedUUID = null;
@@ -97,10 +102,15 @@ export class StopPaginationMenu extends Handler {
     }
 
     context.session.searchData.paginationMenu.currentTrackedUUID = null;
-
     context.session.searchData.dataTransformedToMenu = [];
 
     await this.commandService.handle("start-main-menu",context)
+  }
+
+  private checkFlags(ctx:MyContext){
+    if (ctx.session.utilityFlags.favouriteChecking){
+      ctx.session.utilityFlags.favouriteChecking = false;
+    }
   }
 
 }

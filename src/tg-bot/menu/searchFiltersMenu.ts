@@ -96,16 +96,16 @@ export class ChooseFilterSubCatMenu extends MenuStructure {
                 await this.commandService.handle('set-filter-sub-cat', ctx, 'all');
             })
             .row()
-            .text((ctx)=>ctx.t("subCategory.values", {value: "mobilnye-telefony-smartfony"}), async (ctx) => {
-                await this.commandService.handle('set-filter-sub-cat', ctx, '85');
+            .text((ctx)=>ctx.t("subCategory.values", {value: "smartphones"}), async (ctx) => {
+                await this.commandService.handle('set-filter-sub-cat', ctx, 'smartphones');
             })
             .row()
-            .text((ctx)=>ctx.t("subCategory.values", {value: "zapchasti-dlya-telefonov"}), async (ctx) => {
-                await this.commandService.handle('set-filter-sub-cat', ctx, '1482');
+            .text((ctx)=>ctx.t("subCategory.values", {value: "parts-for-smartphones"}), async (ctx) => {
+                await this.commandService.handle('set-filter-sub-cat', ctx, 'parts-for-smartphones');
             })
             .row()
-            .text((ctx)=>ctx.t("subCategory.values", {value: "aksessuary-dlya-telefonov"}), async (ctx) => {
-                await this.commandService.handle('set-filter-sub-cat', ctx, '442');
+            .text((ctx)=>ctx.t("subCategory.values", {value: "accessories-for-smartphones"}), async (ctx) => {
+                await this.commandService.handle('set-filter-sub-cat', ctx, 'accessories-for-smartphones');
             })
     }
 }

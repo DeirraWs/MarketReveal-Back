@@ -11,7 +11,6 @@ export class MinPrice extends Handler{
     constructor(@Inject() commandService : CommandService,
                 @Inject() private dialogService : DialogService
     ) {
-
         super();
         commandService.addHandler('set-filter-min-price', this);
     }
@@ -47,7 +46,7 @@ export class State extends Handler {
                 @Inject() private dialogService: DialogService) {
 
         super();
-        commandService.addHandler('set-filter-state', this);
+        commandService.addHandler('stet-filter-sate', this);
     }
 
     async handlerLogic(context: MyContext, state: string): Promise<any> {

@@ -2,11 +2,11 @@ import {ISearchModule} from "../ISearchModule";
 import {Product, SearchResult} from "../../types/types";
 import {Inject, Injectable} from "@nestjs/common";
 import olxSearchCore from "./olxSearchCore";
-import { OlxConvertor } from './olxConvertor';
+import { olxConvertor } from './olx-convertor.service';
 import { SearchParams } from '../../../tg-bot/tg-bot.service';
 import {ICacheTracking } from '../ICache';
 import { ITrack } from '../ITrack';
-import { Track } from '../Track';
+import { olxTrack } from './olxTrack'
 
 @Injectable()
 export class olxSearchModule extends ISearchModule {
@@ -18,7 +18,7 @@ export class olxSearchModule extends ISearchModule {
     constructor(
       @Inject() private _searchCore: olxSearchCore,
       //@Inject() private cacheService,
-      @Inject() private _convertor: OlxConvertor,
+      @Inject() private _convertor: olxConvertor,
     ) {
         super();
     }
@@ -37,7 +37,7 @@ export class olxSearchModule extends ISearchModule {
     }
 
     createTrack(searchParam: SearchParams, cache: ICacheTracking): ITrack {
-        return new Track(this._searchCore,this._convertor,cache,searchParam);
+        return new olxTrack(this._searchCore,this._convertor,cache,searchParam);
     }
 
 }

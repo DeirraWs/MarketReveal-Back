@@ -35,8 +35,8 @@ export class SearchDialog extends Dialog {
             await ctx.reply(ctx.t("search-process-start"))
             try {
                 ctx.session.searchData.searchParams.query = dialogData.searchName;
-                await this.commandService.handle('generate-filters-message', ctx);
                 await this.end(ctx)
+                await this.commandService.handle('generate-filters-message', ctx);
             } catch (e){
                 console.log(e);
                 await ctx.reply(ctx.t("search-process-finish-not-success"))

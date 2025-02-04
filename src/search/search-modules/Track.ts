@@ -20,12 +20,15 @@ export class Track extends ITrack {
   }
 
   async getData(): Promise<ResultStructure[]> {
-
-    const resultOFSearch : ResultStructure[] = await this.searchCore.getDetailInformationByProduct([this.url])
-
-    const newURL : string[] = await this.cache.getUrlsNotExistedInCache(resultOFSearch.map((value)=>{return value.url}))
-
-    return resultOFSearch.filter((value) => newURL.includes(value.url));
+    return this.convertor.ConvertSearchResultsToStandard(
+      await this.searchCore.getDetailInformationByProduct(
+        await this.cache.getUrlsNotExistedInCache(
+          await this.searchCore.getListOfProductsUrls(
+            this.url
+          )
+        )
+      )
+    )
   }
 
 }

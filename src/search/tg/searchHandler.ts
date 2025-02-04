@@ -21,10 +21,7 @@ export class SearchHandler extends Handler {
 
     async handlerLogic(context: MyContext): Promise<any> {
         await context.reply(context.t("search-process-question"))
-
         await this.dialogService.startDialog(context, "search")
-
-
     }
 
 }
@@ -46,13 +43,10 @@ export class SearchReadyHandler extends Handler {
 
     async handlerLogic(ctx: MyContext): Promise<any> {
         await ctx.reply(ctx.t("search-process-start"))
-
-        await this.dialogService.startDialog(ctx, "search")
-
         ctx.session.searchData.data = await this.searchManager.searchProduct(ctx.session.searchData.searchParams.query, ctx.session.searchData.searchParams.filters);
 
         if ( ctx.session.searchData.data[0].res.length !== 0){
-            ctx.session.searchData.data =  await this.analyzeData( ctx.session.searchData.data,ctx.session.searchData.searchParams.query)
+            //ctx.session.searchData.data =  await this.analyzeData( ctx.session.searchData.data,ctx.session.searchData.searchParams.query)
             await ctx.reply(ctx.t("search-process-finish-success"))
             await this.commandService.handle("start-pagination-menu",ctx)
         }  else {
