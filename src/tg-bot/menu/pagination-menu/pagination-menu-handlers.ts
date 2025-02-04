@@ -87,8 +87,8 @@ export class StopPaginationMenu extends Handler {
   }
 
   async handlerLogic(context: MyContext): Promise<any> {
-    this._setDataByDefault(context);
     await this._checkFlags(context);
+    this._setDataByDefault(context);
   }
 
   private _setDataByDefault(context:MyContext){
