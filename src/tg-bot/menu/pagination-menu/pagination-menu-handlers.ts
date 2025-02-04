@@ -20,13 +20,10 @@ export class StartPaginationMenu extends Handler {
   async handlerLogic(context: MyContext): Promise<any> {
 
       context.session.searchData.dataTransformedToMenu = this._createCorrectFormatOfResult(context.session.searchData.data, context);
-
       this._initPaginationMenuVisualData(context);
 
-      const menu = this.menuService.getMenuClass("menu-pagination");
-
       await context.reply(this.menuPagination.getStartInfo(context), {
-        reply_markup: menu.getMenu(),
+        reply_markup: this.menuPagination.getMenu(),
         parse_mode: "MarkdownV2"
       })
   }
@@ -90,26 +87,25 @@ export class StopPaginationMenu extends Handler {
   }
 
   async handlerLogic(context: MyContext): Promise<any> {
-
-    context.session.searchData.paginationMenu.page = 0;
-    context.session.searchData.paginationMenu.additionalData = [];
-    this.checkFlags(context);
-
-    if (context.session.searchData.paginationMenu.currentTrackedUUID) {
-      context.session.searchData.paginationMenu.currentTrackedUUID = null;
-      await this.commandService.handle("start-tracking-menu", context);
-      return;
-    }
-
-    context.session.searchData.paginationMenu.currentTrackedUUID = null;
-    context.session.searchData.dataTransformedToMenu = [];
-
-    await this.commandService.handle("start-main-menu",context)
+    this._setDataByDefault(context);
+    await this._checkFlags(context);
   }
 
-  private checkFlags(ctx:MyContext){
-    if (ctx.session.utilityFlags.favouriteChecking){
-      ctx.session.utilityFlags.favouriteChecking = false;
+  private _setDataByDefault(context:MyContext){
+    context.session.searchData.paginationMenu.page = 0;
+    context.session.searchData.paginationMenu.additionalData = [];
+    context.session.searchData.dataTransformedToMenu = [];
+    context.session.searchData.paginationMenu.currentTrackedUUID = null;
+  }
+
+  private async _checkFlags(context:MyContext){
+    if (context.session.utilityFlags.favouriteChecking){
+      context.session.utilityFlags.favouriteChecking = false;
+    }
+    if (context.session.searchData.paginationMenu.currentTrackedUUID) {
+      await this.commandService.handle("start-tracking-menu", context);
+    } else {
+      await this.commandService.handle("start-main-menu",context)
     }
   }
 
