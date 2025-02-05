@@ -7,32 +7,18 @@ import {OffersTrackingResultModelService} from "./model/tracking-result.model.se
 import {TrackingManager} from "./core/offers-tracking-manager";
 import {SearchManageModule} from "../search/search-manage/search-manage.module";
 import {RedisModule} from "../redis/redis.module";
-import {
-    ClearCheckedDataTracking, getCountOfResults,
-    GetTracking,
-    StartTracking,
-    StopTracking
-} from "./tg/handlers";
-import {CommandService} from "../tg-bot/command/command.service";
-import {CommandModule} from "../tg-bot/command/command.module";
 
 @Module({
     providers: [
         TrackingManager,
         OffersTrackingService,
         OffersTrackingResultModelService,
-        StartTracking,
-        StopTracking,
-        GetTracking,
-        getCountOfResults,
-        ClearCheckedDataTracking,
     ],
     controllers: [OffersTrackingController],
     imports: [
         SequelizeModule.forFeature([TrackingResult]),
         SearchManageModule,
         RedisModule,
-        CommandModule,
     ],
     exports: [OffersTrackingService, OffersTrackingResultModelService],
 })

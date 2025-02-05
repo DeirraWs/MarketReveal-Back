@@ -1,11 +1,11 @@
-import {CommandService, Handler} from "../../tg-bot/command/command.service";
+import {CommandService, Handler} from "../../../command/command.service";
 import {Inject, Injectable} from "@nestjs/common";
-import {MyContext} from "../../tg-bot/tg-bot.service";
-import {DialogService} from "../../tg-bot/dialog/dialog.service";
-import {MenuService} from "../../tg-bot/menu/menu.service";
-import {SearchManageService} from "../search-manage/search-manage.service";
-import { SearchResult } from '../types/types';
-import { OpenAIService } from '../../open-ai/open-ai.service';
+import {MyContext} from "../../../tg-bot.service";
+import {DialogService} from "../../../dialog/dialog.service";
+import {MenuService} from "../../menu.service";
+import {SearchManageService} from "../../../../search/search-manage/search-manage.service";
+import { SearchResult } from '../../../../search/types/types';
+import { OpenAIService } from '../../../../open-ai/open-ai.service';
 
 @Injectable()
 export class SearchHandler extends Handler {

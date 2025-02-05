@@ -1,11 +1,11 @@
-import {Dialog, DialogService} from "../../tg-bot/dialog/dialog.service";
-import {MyContext} from "../../tg-bot/tg-bot.service";
+import {Dialog, DialogService} from "../../../dialog/dialog.service";
+import {MyContext} from "../../../tg-bot.service";
 import {Inject, Injectable} from "@nestjs/common";
-import {MenuService} from "../../tg-bot/menu/menu.service";
-import {SearchManageService} from "../search-manage/search-manage.service";
-import { CommandService } from '../../tg-bot/command/command.service';
-import { OpenAIService } from '../../open-ai/open-ai.service';
-import { ResultStructure, SearchResult } from '../types/types';
+import {MenuService} from "../../menu.service";
+import {SearchManageService} from "../../../../search/search-manage/search-manage.service";
+import { CommandService } from '../../../command/command.service';
+import { OpenAIService } from '../../../../open-ai/open-ai.service';
+import { ResultStructure, SearchResult } from '../../../../search/types/types';
 
 @Injectable()
 export class SearchDialog extends Dialog {
@@ -36,7 +36,7 @@ export class SearchDialog extends Dialog {
             try {
                 ctx.session.searchData.searchParams.query = dialogData.searchName;
                 await this.end(ctx)
-                await this.commandService.handle('generate-filters-message', ctx);
+                await this.commandService.handle('generate-search-properties-message', ctx);
             } catch (e){
                 console.log(e);
                 await ctx.reply(ctx.t("search-process-finish-not-success"))

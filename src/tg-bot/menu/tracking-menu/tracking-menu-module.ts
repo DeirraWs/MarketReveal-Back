@@ -2,18 +2,31 @@ import { forwardRef, Module } from '@nestjs/common';
 import { CommandModule } from '../../command/command.module';
 import { MenuModule } from '../menu.module';
 import { TrackingMenu } from './trackingMenu';
-import { StartTrackingMenu } from './tracking-menu-handler';
+import {
+  ClearCheckedDataTracking, getCountOfResults,
+  GetTracking,
+  StartTracking,
+  StartTrackingMenu,
+  StopTracking,
+} from './tracking-menu-handler';
+import { OffersTrackingModule } from '../../../offers-tracking/offers-tracking.module';
 
 
 @Module(
   {
     providers: [
       TrackingMenu,
-      StartTrackingMenu
+      StartTrackingMenu,
+      StartTracking,
+      StopTracking,
+      GetTracking,
+      ClearCheckedDataTracking,
+      getCountOfResults,
     ],
     imports: [
       CommandModule,
-      forwardRef( () => MenuModule) ,
+      forwardRef( () => MenuModule),
+      OffersTrackingModule,
     ],
     exports: [
       TrackingMenu,

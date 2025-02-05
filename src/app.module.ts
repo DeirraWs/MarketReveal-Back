@@ -17,6 +17,7 @@ import { OpenAiModule } from './open-ai/open-ai.module';
 import { OffersTrackingModule } from './offers-tracking/offers-tracking.module';
 import { RedisModule } from './redis/redis.module';
 import { FavouriteProductModule } from './favourite-product/favourite-product.module';
+import { SearchPropertiesModule } from './search/search-properties/search-properties.module';
 
 @Module({
   imports: [
@@ -36,7 +37,7 @@ import { FavouriteProductModule } from './favourite-product/favourite-product.mo
           synchronize: true,
           sync: { force: false },
       })
-    , UsersModule, RolesModule, AuthModule, TgBotModule, SearchManageModule, DictionaryModule, OpenAiModule, OffersTrackingModule, RedisModule, FavouriteProductModule],
+    , UsersModule, RolesModule, AuthModule, TgBotModule, SearchManageModule, DictionaryModule, OpenAiModule, OffersTrackingModule, RedisModule, FavouriteProductModule,SearchPropertiesModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -29,34 +29,6 @@ main_menu_help_btn = Help
 main_menu_tracking_btn = Tracked
 main_menu_view_favourite_products_btn = Favourite products
 
-//Search filters
-
-search-filters-message-header = Your filters
-
-minPrice = Min price
-    .inputDesc = Write the minimum price of the product you want to find in uah...
-    .values = {$value} uah
-
-maxPrice = Max price
-    .inputDesc = Write the maximum price of the product you want to find in uah...
-    .values = {$value} uah
-
-state = State
-    .inputDesc = Choose the state of the product you want to find...
-    .values = { $value ->
-        [new] New
-        [used] Used
-        *[other] All
-    }
-
-subCategory = 🗂️Subcategory
-    .inputDesc = Choose the subcategory of the product you want to find...
-    .values = { $value ->
-        [smartphones] Smartphones
-        [parts-for-smartphones] Phone parts
-        [accessories-for-smartphones] Phone accessories
-        *[other] All
-    }
 
 
 //Search dialog

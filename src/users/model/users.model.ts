@@ -12,7 +12,7 @@ export interface IUser {
 
 @Table({
     tableName: 'users',
-    timestamps: true, // Додає поля createdAt та updatedAt автоматично
+    timestamps: true,
 })
 export class User extends Model<User,IUser>{
 

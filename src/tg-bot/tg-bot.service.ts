@@ -9,11 +9,17 @@ import { AuthService } from 'src/auth/auth.service';
 import { RoleGuard} from 'src/auth/guard/roles-guard';
 import {CommandService} from "./command/command.service";
 import { number } from 'zod';
+import { Category } from '../search/search-properties/model/category.model';
 
 export interface SessionSearchData{
     dataTransformedToMenu: string[];
     data: any[];
     searchParams: SearchParams;
+    searchParamsMenuState:{
+        dataToViewInChoseMenu: Category[];
+        category: Category[];
+        subCategory: Category[];
+    };
     paginationMenu:{
         page: number;
         currentTrackedUUID: string | null;
@@ -28,6 +34,7 @@ export interface SearchParams{
     query: string;
     filters: {};
     params: {};
+
 }
 
 export interface TrackingMenuElementData{
@@ -128,6 +135,11 @@ export class TgBotService implements OnModuleInit {
                             query:"",
                             filters:{},
                             params:{},
+                        },
+                        searchParamsMenuState:{
+                            dataToViewInChoseMenu:[],
+                            category:[],
+                            subCategory:[],
                         },
                         paginationMenu:{
                             page:0,
