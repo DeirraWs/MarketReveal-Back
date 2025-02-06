@@ -1,7 +1,8 @@
 import { ISearchCore } from "../ISearchCore";
-import axios from 'axios';
 import { IOfferDetail, IParam } from './types/OfferData';
 import { Injectable } from "@nestjs/common";
+import puppeteer, { Browser } from 'puppeteer';
+
 
 
 export interface IPrice {
@@ -11,6 +12,12 @@ export interface IPrice {
 
 @Injectable()
 export default class olxSearchCore extends ISearchCore {
+
+    private _browser : Browser;
+
+    constructor() {
+        super();
+    }
 
     async getListOfProductsUrls(url:string) : Promise<string[]> {
         const data = await this.getListOfProducts(url)
@@ -28,19 +35,47 @@ export default class olxSearchCore extends ISearchCore {
 
     async getListOfProducts(url:string): Promise<IOfferDetail[]> {
         try {
-            const response = await axios.get(url);
-            return response.data?.data || [];
+            const response = await this.responseToAPISimulateBrowser(url);
+            if (response){
+                return response.data || [];
+            } else {
+                console.error("Error fetching products list");
+            }
         } catch (error) {
             console.error("Error fetching products list:", error);
             return [];
         }
     }
 
-     /**
-     * Parses the API response to extract offer details.
-     * @param {any} data - API response for a single offer.
-     * @returns {Object} Parsed offer details.
-     */
+    private async responseToAPISimulateBrowser(url: string): Promise<any> {
+        try {
+            if (this._browser === null)
+                await this._createNewBrowser()
+
+            const page = await this._browser.newPage();
+            let data:any;
+
+            page.on('response', async (response) => {
+                if (response.url() === url){
+                    data = await response.json();  // Отримуємо дані з відповіді
+                }
+            });
+
+            await page.goto(url, { waitUntil: 'networkidle0' });
+            return data;
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    private async _createNewBrowser(){
+        try {
+            this._browser = await puppeteer.launch({ headless: true });
+        } catch (e){
+            console.log(e);
+        }
+    }
+
     private parseOfferDetails(data: IOfferDetail): Object {
         if (!data) return null;
 
@@ -100,12 +135,6 @@ export default class olxSearchCore extends ISearchCore {
 
         return cleaned;
     }
-
-    /**
-     * Parses the price object from the API response.
-     * @param {any} priceData - API price data.
-     * @returns {IPrice} Parsed price object.
-     */
 
     private _parsePrice(priceData: any): IPrice {
         return {

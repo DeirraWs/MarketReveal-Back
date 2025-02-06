@@ -3,7 +3,6 @@ import { MenuService, MenuStructure } from '../menu.service';
 import { Menu, MenuRange } from '@grammyjs/menu';
 import { MyContext } from '../../tg-bot.service';
 import { CommandService } from '../../command/command.service';
-import { undefined } from 'zod';
 
 @Injectable()
 

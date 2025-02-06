@@ -8,7 +8,6 @@ import * as process from "node:process";
 import { AuthService } from 'src/auth/auth.service';
 import { RoleGuard} from 'src/auth/guard/roles-guard';
 import {CommandService} from "./command/command.service";
-import { number } from 'zod';
 import { Category } from '../search/search-properties/model/category.model';
 
 export interface SessionSearchData{
