@@ -13,7 +13,7 @@ export interface IPrice {
 @Injectable()
 export default class olxSearchCore extends ISearchCore {
 
-    private _browser : Browser;
+    private _browser : Browser|null = null;
 
     constructor() {
         super();
